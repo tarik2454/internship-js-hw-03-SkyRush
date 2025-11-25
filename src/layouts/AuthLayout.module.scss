@@ -1,0 +1,36 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.container {
+  @include flex-center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  padding: 33px;
+  border-radius: $radius-14;
+  border: 1px solid rgba(0, 122, 85, 0.5);
+  background: rgba(29, 41, 61, 0.8);
+
+  .header {
+    margin-bottom: 57px;
+
+    .logo {
+      margin-bottom: 16px;
+    }
+
+    .title {
+      margin-bottom: 8px;
+      font-size: 30px;
+      font-weight: 400;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: #90a1b9;
+    }
+  }
+}

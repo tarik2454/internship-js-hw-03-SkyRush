@@ -1,0 +1,101 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as m;
+
+.leaderboardPage {
+  padding: $spacing-lg;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: $spacing-xl;
+  background: linear-gradient(45deg, $color-warning, $color-accent);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.tableContainer {
+  @include m.glass-effect;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: $spacing-md;
+    text-align: left;
+  }
+
+  th {
+    background: rgba(0, 0, 0, 0.3);
+    color: $color-text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.2s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+.topRank {
+  background: linear-gradient(90deg, rgba($color-warning, 0.1), transparent);
+
+  .rank {
+    font-size: 1.5rem;
+  }
+
+  .username {
+    color: $color-warning;
+    font-weight: 700;
+  }
+}
+
+.currentUser {
+  background: rgba($color-primary, 0.1) !important;
+  border-top: 2px solid $color-primary;
+
+  .username {
+    color: $color-primary;
+    font-weight: 700;
+  }
+}
+
+.rank {
+  font-weight: 700;
+  width: 80px;
+  text-align: center;
+}
+
+.win {
+  color: $color-success;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.multiplier {
+  color: $color-accent;
+  font-family: monospace;
+}

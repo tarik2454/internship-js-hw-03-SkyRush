@@ -1,0 +1,142 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as m;
+
+.canvasContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background: radial-gradient(circle at center, #2a2a35 0%, $color-bg 70%);
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+.gameArea {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  @include m.flex-center;
+}
+
+.multiplierContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.multiplier {
+  font-size: 4rem;
+  font-weight: 800;
+  color: white;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+
+  &.crashed {
+    color: $color-danger;
+  }
+}
+
+.crashedText {
+  font-size: 1.5rem;
+  color: $color-danger;
+  font-weight: 700;
+  margin-top: $spacing-sm;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.rocket {
+  font-size: 3rem;
+  position: absolute;
+  bottom: 20%;
+  left: 20%;
+  transition: all 0.5s ease-out;
+
+  &[data-state="FLYING"] {
+    animation: fly 2s infinite alternate;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+
+  &[data-state="CRASHED"] {
+    filter: grayscale(100%) blur(2px);
+    transform: scale(0.8) rotate(45deg);
+  }
+}
+
+@keyframes fly {
+  0% {
+    transform: translate(-50%, -50%) translateY(0px);
+  }
+  100% {
+    transform: translate(-50%, -50%) translateY(-20px);
+  }
+}
+
+.startBtn,
+.cashoutBtn {
+  margin-top: $spacing-xl;
+  padding: $spacing-md $spacing-xl;
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 200px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.startBtn {
+  background: linear-gradient(45deg, $color-primary, $color-accent);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba($color-primary, 0.4);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($color-primary, 0.6);
+  }
+}
+
+.cashoutBtn {
+  background: linear-gradient(45deg, $color-warning, #ff6f00);
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba($color-warning, 0.4);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($color-warning, 0.6);
+  }
+}
+
+.success {
+  color: $color-success;
+}
+
+.winText {
+  font-size: 1.5rem;
+  color: $color-success;
+  font-weight: 700;
+  margin-top: $spacing-sm;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,45 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.header {
+  @include flex-between;
+  height: 60px;
+  padding: 0 $spacing-lg;
+  background-color: $color-bg-secondary;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(45deg, $color-primary, $color-accent);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.balance {
+  @include flex-center;
+  gap: $spacing-sm;
+  background: rgba(0, 0, 0, 0.3);
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-full;
+  border: 1px solid rgba($color-success, 0.3);
+
+  .amount {
+    color: $color-success;
+    font-weight: 700;
+    font-family: monospace;
+    font-size: 1.1rem;
+  }
+}
+
+.profile {
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: $color-primary;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+}

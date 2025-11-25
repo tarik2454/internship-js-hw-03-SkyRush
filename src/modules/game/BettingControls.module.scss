@@ -1,0 +1,129 @@
+@use "sass:color";
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as m;
+
+.controls {
+  @include m.glass-effect;
+  padding: $spacing-lg;
+  border-radius: $radius-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  height: 100%;
+}
+
+.tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.2);
+  padding: $spacing-xs;
+  border-radius: $radius-full;
+
+  .tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: $spacing-sm;
+    border-radius: $radius-full;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+
+    &.active {
+      background: $color-bg-secondary;
+      color: $color-text;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+
+.controlGroup {
+  label {
+    display: block;
+    margin-bottom: $spacing-sm;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+  }
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  background: $color-bg-secondary;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  padding: $spacing-xs;
+
+  button {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    text-align: center;
+    color: $color-text;
+    font-weight: 700;
+    font-size: 1.1rem;
+
+    &:focus {
+      outline: none;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.quickBets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-xs;
+  margin-top: $spacing-sm;
+
+  button {
+    padding: $spacing-xs;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.placeBetBtn {
+  margin-top: auto;
+  width: 100%;
+  padding: $spacing-lg;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: $color-success;
+  color: white;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba($color-success, 0.3);
+
+  &:hover {
+    background: color.adjust($color-success, $lightness: 5%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($color-success, 0.5);
+  }
+}
