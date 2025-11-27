@@ -1,10 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./styles/main.scss";
 import App from "./App.tsx";
+import "./styles/main.scss";
+import { Slide, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
+    <ToastContainer autoClose={2000} transition={Slide} />
   </StrictMode>
 );

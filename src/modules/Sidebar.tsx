@@ -14,7 +14,7 @@ export const Sidebar = () => {
           className={`${styles.navItem} ${isActive("/") ? styles.active : ""}`}
           onClick={() => navigate("/")}
         >
-          Game
+          Home
         </div>
         <div
           className={`${styles.navItem} ${

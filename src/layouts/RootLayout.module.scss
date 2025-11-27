@@ -1,0 +1,11 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.main {
+}

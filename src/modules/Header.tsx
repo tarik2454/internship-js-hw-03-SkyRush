@@ -4,11 +4,22 @@ import { useGame } from "@/providers/GameProvider";
 import { logoutUser } from "@/config/authApi";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { Logo } from "@/shared/icons/logo";
+import Container from "@/shared/Container";
+import { Wallet } from "@/shared/icons/wallet";
+import { Settings } from "@/shared/icons/settings";
+import { Auth } from "@/shared/icons/auth";
+import Modal from "@/shared/Modal";
+import { Profile } from "./Profile";
 
 export const Header = () => {
   const navigate = useNavigate();
   const { balance } = useGame();
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const handleLogout = async () => {
     try {
@@ -29,32 +40,42 @@ export const Header = () => {
   };
 
   return (
-    <header className={styles.header}>
-      <div
-        className={styles.logo}
-        onClick={() => navigate("/")}
-        style={{ cursor: "pointer" }}
-      >
-        SkyRush
-      </div>
-      <div className={styles.balance}>
-        <span>Balance:</span>
-        <span className={styles.amount}>${balance.toFixed(2)}</span>
-      </div>
-      <div
-        className={styles.profile}
-        onClick={() => navigate("/profile")}
-        style={{ cursor: "pointer" }}
-      >
-        <div className={styles.avatar} />
-      </div>
-      <button
-        className={styles.logoutButton}
-        onClick={handleLogout}
-        disabled={loading}
-      >
-        {loading ? "Logging out..." : "Logout"}
-      </button>
-    </header>
+    <>
+      <header className={styles.header}>
+        <Container>
+          <div className={styles.headerInner}>
+            <div className={styles.logo} onClick={() => navigate("/")}>
+              <Logo />
+              Rocket Casino
+            </div>
+
+            <div className={styles.headerActions}>
+              <div className={styles.balance}>
+                <Wallet />
+
+                <span className={styles.amount}>${balance.toFixed(2)}</span>
+              </div>
+
+              <button className={styles.profileBtn} onClick={openModal}>
+                <Settings />
+              </button>
+
+              <button
+                className={styles.logoutButton}
+                onClick={handleLogout}
+                disabled={loading}
+              >
+                <Auth />
+                {loading ? "Logging out..." : "Logout"}
+              </button>
+            </div>
+          </div>
+        </Container>
+      </header>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <Profile />
+      </Modal>
+    </>
   );
 };
