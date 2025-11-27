@@ -1,8 +1,51 @@
 import { Bonus } from "@/shared/icons/bonus";
 import styles from "./ClaimBonus.module.scss";
 import { Timer } from "@/shared/icons/timer";
+import { useGame } from "@/providers/GameProvider";
+import { useState, useEffect } from "react";
 
 export const ClaimBonus = () => {
+  const { claimBonus, lastBonusClaimTime } = useGame();
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+
+  useEffect(() => {
+    const updateTimer = () => {
+      if (!lastBonusClaimTime) {
+        setTimeRemaining(0);
+        return;
+      }
+
+      const now = Date.now();
+      const COOLDOWN_MS = 60 * 1000; // 1 minute
+      const elapsed = now - lastBonusClaimTime;
+      const remaining = Math.max(0, COOLDOWN_MS - elapsed);
+
+      setTimeRemaining(Math.ceil(remaining / 1000));
+    };
+
+   
+    updateTimer();
+
+    
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [lastBonusClaimTime]);
+
+  const canClaim = timeRemaining === 0;
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleClaim = () => {
+    if (canClaim) {
+      claimBonus();
+    }
+  };
+
   return (
     <section className={styles.claimSection}>
       <div className={styles.claimHeader}>
@@ -12,7 +55,7 @@ export const ClaimBonus = () => {
 
         <div>
           <h2 className={styles.title}>Claim Bonus</h2>
-          <p className={styles.description}>Free money every minutes</p>
+          <p className={styles.description}>Free money every minute</p>
         </div>
       </div>
 
@@ -20,7 +63,7 @@ export const ClaimBonus = () => {
         <div className={styles.claimTimer}>
           Next Claim:
           <span>
-            <Timer /> 0:53
+            <Timer /> {canClaim ? "Ready!" : formatTime(timeRemaining)}
           </span>
         </div>
         <div className={styles.claimAmount}>
@@ -28,7 +71,13 @@ export const ClaimBonus = () => {
         </div>
       </div>
 
-      <button className={styles.claimBtn}>Claim Now!</button>
+      <button
+        className={styles.claimBtn}
+        onClick={handleClaim}
+        disabled={!canClaim}
+      >
+        {canClaim ? "Claim Now!" : "Wait..."}
+      </button>
     </section>
   );
 };

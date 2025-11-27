@@ -1,5 +1,5 @@
-@use "../../styles/variables" as *;
-@use "../../styles/mixins" as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 .form {
   display: flex;
@@ -13,17 +13,17 @@
   label {
     display: block;
     margin-bottom: 4px;
-    font-weight: 500;
     color: #cad5e2;
+    font-weight: 500;
   }
 
   input {
     width: 100%;
     padding: 9.5px 12px;
-    border-radius: $radius-8;
     border: 1px solid rgba(49, 65, 88, 1);
-    color: #cad5e2;
+    border-radius: $radius-8;
     background: rgba(15, 23, 43, 1);
+    color: #cad5e2;
 
     transition: $transition-base;
 
@@ -32,8 +32,8 @@
     }
 
     &:focus {
-      outline: none;
       border-color: $color-primary;
+      outline: none;
       background: rgba(0, 0, 0, 0.3);
     }
   }
@@ -41,11 +41,9 @@
 
 .submitBtn {
   @include flex-center;
-  gap: 7px;
   width: 100%;
   padding: 10px 0;
-  color: #fff;
-  font-size: 16px;
+  gap: 7px;
   border: none;
 
   background: linear-gradient(
@@ -53,8 +51,10 @@
     rgba(0, 152.7294158935547, 101.7408218383789, 1),
     rgba(21.32286262512207, 92.9263687133789, 251.51747131347656, 1) 100%
   );
-  background-size: 200% 100%;
   background-position: left;
+  background-size: 200% 100%;
+  color: #fff;
+  font-size: 16px;
 
   transition: $transition-base;
 
@@ -77,10 +77,10 @@
 }
 
 .errorMessage {
+  display: block;
+  margin-top: 4px;
   color: $color-danger;
   font-size: 0.85rem;
-  margin-top: 4px;
-  display: block;
   animation: slideDown 0.2s ease-out;
 }
 

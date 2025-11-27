@@ -5,9 +5,9 @@ import {
   useEffect,
   type ReactNode,
   useRef,
-} from "react";
+} from 'react';
 
-type GameState = "IDLE" | "BETTING" | "FLYING" | "CRASHED" | "CASHOUT";
+type GameState = 'IDLE' | 'BETTING' | 'FLYING' | 'CRASHED' | 'CASHOUT';
 
 interface GameContextType {
   balance: number;
@@ -20,6 +20,8 @@ interface GameContextType {
   autoCashOut: number;
   setAutoCashOut: (val: number) => void;
   lastWin: number;
+  claimBonus: () => void;
+  lastBonusClaimTime: number | null;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -28,20 +30,23 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [balance, setBalance] = useState<number>(1000.0);
   const [betAmount, setBetAmount] = useState<number>(10);
   const [multiplier, setMultiplier] = useState<number>(1.0);
-  const [gameState, setGameState] = useState<GameState>("IDLE");
+  const [gameState, setGameState] = useState<GameState>('IDLE');
   const [autoCashOut, setAutoCashOut] = useState<number>(2.0);
   const [lastWin, setLastWin] = useState<number>(0);
+  const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
+    null
+  );
 
   const requestRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
 
   const startGame = () => {
     if (balance < betAmount) {
-      alert("Insufficient balance!");
+      alert('Insufficient balance!');
       return;
     }
     setBalance((prev) => prev - betAmount);
-    setGameState("FLYING");
+    setGameState('FLYING');
     setMultiplier(1.0);
     setLastWin(0);
     startTimeRef.current = Date.now();
@@ -56,7 +61,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       const currentMultiplier = 1 + Math.pow(elapsed, 2) * 0.1;
 
       if (currentMultiplier >= crashPoint) {
-        setGameState("CRASHED");
+        setGameState('CRASHED');
         setMultiplier(crashPoint);
         return;
       }
@@ -79,14 +84,30 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const winAmount = betAmount * finalMultiplier;
     setBalance((prev) => prev + winAmount);
     setLastWin(winAmount);
-    setGameState("CASHOUT");
+    setGameState('CASHOUT');
     setMultiplier(finalMultiplier);
   };
 
   const cashOut = () => {
-    if (gameState === "FLYING") {
+    if (gameState === 'FLYING') {
       handleCashOut(multiplier);
     }
+  };
+
+  const claimBonus = () => {
+    const now = Date.now();
+    const COOLDOWN_MS = 60 * 1000; // 1 minute in milliseconds
+
+    if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN_MS) {
+      const remainingSeconds = Math.ceil(
+        (COOLDOWN_MS - (now - lastBonusClaimTime)) / 1000
+      );
+      alert(`Please wait ${remainingSeconds} seconds before claiming again!`);
+      return;
+    }
+
+    setBalance((prev) => prev + 10);
+    setLastBonusClaimTime(now);
   };
 
   useEffect(() => {
@@ -106,6 +127,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         autoCashOut,
         setAutoCashOut,
         lastWin,
+        claimBonus,
+        lastBonusClaimTime,
       }}
     >
       {children}
@@ -116,7 +139,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 export const useGame = () => {
   const context = useContext(GameContext);
   if (!context) {
-    throw new Error("useGame must be used within a GameProvider");
+    throw new Error('useGame must be used within a GameProvider');
   }
   return context;
 };

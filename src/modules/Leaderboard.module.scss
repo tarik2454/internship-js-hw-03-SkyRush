@@ -1,29 +1,29 @@
-@use "../styles/variables" as *;
-@use "../styles/mixins" as m;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as m;
 
 .leaderboardPage {
-  padding: $spacing-lg;
   max-width: 800px;
   margin: 0 auto;
+  padding: $spacing-lg;
 }
 
 .title {
-  text-align: center;
-  font-size: 2rem;
   margin-bottom: $spacing-xl;
   background: linear-gradient(45deg, $color-warning, $color-accent);
   background-clip: text;
   -webkit-background-clip: text;
+  font-size: 2rem;
+  text-align: center;
   -webkit-text-fill-color: transparent;
   font-weight: 800;
-  text-transform: uppercase;
   letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .tableContainer {
   @include m.glass-effect;
-  border-radius: $radius-lg;
   overflow: hidden;
+  border-radius: $radius-lg;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
@@ -41,9 +41,9 @@
     background: rgba(0, 0, 0, 0.3);
     color: $color-text-muted;
     font-weight: 600;
-    text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 1px;
+    text-transform: uppercase;
   }
 
   tr {
@@ -74,8 +74,8 @@
 }
 
 .currentUser {
-  background: rgba($color-primary, 0.1) !important;
   border-top: 2px solid $color-primary;
+  background: rgba($color-primary, 0.1) !important;
 
   .username {
     color: $color-primary;
@@ -84,15 +84,15 @@
 }
 
 .rank {
-  font-weight: 700;
   width: 80px;
+  font-weight: 700;
   text-align: center;
 }
 
 .win {
   color: $color-success;
-  font-family: monospace;
   font-weight: 600;
+  font-family: monospace;
 }
 
 .multiplier {

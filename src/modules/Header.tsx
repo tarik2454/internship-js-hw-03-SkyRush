@@ -1,16 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import styles from "./Header.module.scss";
-import { useGame } from "@/providers/GameProvider";
-import { logoutUser } from "@/config/authApi";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { Logo } from "@/shared/icons/logo";
-import Container from "@/shared/Container";
-import { Wallet } from "@/shared/icons/wallet";
-import { Settings } from "@/shared/icons/settings";
-import { Auth } from "@/shared/icons/auth";
-import Modal from "@/shared/Modal";
-import { Profile } from "./Profile";
+import { useNavigate } from 'react-router-dom';
+import styles from './Header.module.scss';
+import { useGame } from '@/providers/GameProvider';
+import { logoutUser } from '@/config/authApi';
+import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { Logo } from '@/shared/icons/logo';
+import Container from '@/shared/Container';
+import { Wallet } from '@/shared/icons/wallet';
+import { Settings } from '@/shared/icons/settings';
+import { Auth } from '@/shared/icons/auth';
+import Modal from '@/shared/Modal';
+import { Profile } from './Profile';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -24,16 +24,16 @@ export const Header = () => {
   const handleLogout = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       if (token) {
         await logoutUser(token);
-        toast.success("Successfully logged out!");
+        toast.success('Successfully logged out!');
       }
-      localStorage.removeItem("token");
-      navigate("/auth/login");
+      localStorage.removeItem('token');
+      navigate('/auth/login');
     } catch (error) {
-      console.error("Logout error:", error);
-      toast.error("Failed to log out. Please try again.");
+      console.error('Logout error:', error);
+      toast.error('Failed to log out. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -44,7 +44,7 @@ export const Header = () => {
       <header className={styles.header}>
         <Container>
           <div className={styles.headerInner}>
-            <div className={styles.logo} onClick={() => navigate("/")}>
+            <div className={styles.logo} onClick={() => navigate('/')}>
               <Logo />
               Rocket Casino
             </div>
@@ -66,7 +66,7 @@ export const Header = () => {
                 disabled={loading}
               >
                 <Auth />
-                {loading ? "Logging out..." : "Logout"}
+                {loading ? 'Logging out...' : 'Logout'}
               </button>
             </div>
           </div>

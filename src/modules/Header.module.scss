@@ -1,5 +1,5 @@
-@use "../styles/variables" as *;
-@use "../styles/mixins" as *;
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
 
 .header {
   padding: 19px 0;
@@ -25,8 +25,8 @@
 
 .balance {
   @include flex-center;
-  gap: 8px;
   padding: 9px 16px;
+  gap: 8px;
 
   border: 1px solid rgba(0, 122, 85, 0.5);
   border-radius: $radius-10;
@@ -51,8 +51,8 @@
 
 .profileBtn {
   padding: 10px;
-  border-radius: 50%;
   border: none;
+  border-radius: 50%;
   background-color: transparent;
 
   &:focus,
@@ -63,8 +63,8 @@
 
 .logoutButton {
   @include flex-center;
-  gap: 14px;
   padding: 6px 10px;
+  gap: 14px;
   border: 1px solid rgba(49, 65, 88, 1);
   border-radius: 8px;
   background: rgba(29, 41, 61, 0.5);

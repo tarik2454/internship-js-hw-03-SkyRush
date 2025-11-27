@@ -1,4 +1,4 @@
-import styles from "./GameList.module.scss";
+import styles from './GameList.module.scss';
 
 export const GameList = () => {
   return (
