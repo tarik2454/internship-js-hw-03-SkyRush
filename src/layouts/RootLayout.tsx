@@ -10,8 +10,6 @@ export const RootLayout = () => {
       <div className={styles.layout}>
         <Header />
         <main className={styles.main}>
-          {/* <Sidebar /> */}
-
           <Outlet />
         </main>
       </div>

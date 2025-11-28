@@ -30,14 +30,18 @@ export const Profile = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          setIsLoadingUser(false);
           return;
         }
         const userData = await getCurrentUser(token);
         setValue("username", userData.username);
-      } catch (err) {
-        console.error("Failed to load user data:", err);
-        toast.error("Failed to load user data");
+      } catch (err: unknown) {
+        if (err instanceof AxiosError) {
+          toast.error(
+            err.response?.data?.message || "Failed to load user data"
+          );
+        } else {
+          toast.error("Failed to load user data");
+        }
       } finally {
         setIsLoadingUser(false);
       }
