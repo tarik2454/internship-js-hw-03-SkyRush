@@ -59,6 +59,8 @@ export interface User {
   username: string;
   gamesPlayed: number;
   balance: number;
+  totalWagered: number;
+  totalWon: number;
 }
 
 export const getAllUsers = async (token: string): Promise<User[]> => {

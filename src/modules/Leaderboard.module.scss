@@ -98,6 +98,16 @@
   font-size: 12px;
 }
 
+.currentUser {
+  border: 2px solid $color-primary !important;
+  background: rgba($color-primary, 0.1) !important;
+
+  .username {
+    color: $color-primary;
+    font-weight: 700;
+  }
+}
+
 .ownRank {
   display: block;
   padding-top: 18px;
