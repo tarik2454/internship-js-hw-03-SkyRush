@@ -5,9 +5,10 @@ import {
   useEffect,
   type ReactNode,
   useRef,
-} from 'react';
+} from "react";
+import { getCurrentUser } from "@/config/authApi";
 
-type GameState = 'IDLE' | 'BETTING' | 'FLYING' | 'CRASHED' | 'CASHOUT';
+type GameState = "IDLE" | "BETTING" | "FLYING" | "CRASHED" | "CASHOUT";
 
 interface GameContextType {
   balance: number;
@@ -22,31 +23,85 @@ interface GameContextType {
   lastWin: number;
   claimBonus: () => void;
   lastBonusClaimTime: number | null;
+  totalWagered: number;
+  gamesPlayed: number;
+  totalWon: number;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
-  const [balance, setBalance] = useState<number>(1000.0);
+  const [balance, setBalance] = useState<number>(100.0);
   const [betAmount, setBetAmount] = useState<number>(10);
   const [multiplier, setMultiplier] = useState<number>(1.0);
-  const [gameState, setGameState] = useState<GameState>('IDLE');
+  const [gameState, setGameState] = useState<GameState>("IDLE");
   const [autoCashOut, setAutoCashOut] = useState<number>(2.0);
   const [lastWin, setLastWin] = useState<number>(0);
   const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
     null
   );
+  const [totalWagered, setTotalWagered] = useState<number>(0);
+  const [gamesPlayed, setGamesPlayed] = useState<number>(0);
+  const [totalWon, setTotalWon] = useState<number>(0);
 
   const requestRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
 
+  const STORAGE_KEY = "sky_rush_game_data";
+
+  useEffect(() => {
+    const initGameData = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const userData = await getCurrentUser(token);
+
+          setBalance(userData.balance ?? 100);
+          setTotalWagered(userData.totalWagered ?? 0);
+          setGamesPlayed(userData.gamesPlayed ?? 0);
+          setTotalWon(userData.totalWon ?? 0);
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+
+    initGameData();
+  }, []);
+
+  const saveToLocal = (data: {
+    balance: number;
+    totalWagered: number;
+    gamesPlayed: number;
+    totalWon: number;
+    lastBonusClaimTime: number | null;
+  }) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  };
+
   const startGame = () => {
     if (balance < betAmount) {
-      alert('Insufficient balance!');
+      alert("Insufficient balance!");
       return;
     }
-    setBalance((prev) => prev - betAmount);
-    setGameState('FLYING');
+
+    const newBalance = balance - betAmount;
+    const newTotalWagered = totalWagered + betAmount;
+    const newGamesPlayed = gamesPlayed + 1;
+
+    setBalance(newBalance);
+    setTotalWagered(newTotalWagered);
+    setGamesPlayed(newGamesPlayed);
+
+    saveToLocal({
+      balance: newBalance,
+      totalWagered: newTotalWagered,
+      gamesPlayed: newGamesPlayed,
+      totalWon,
+      lastBonusClaimTime,
+    });
+
+    setGameState("FLYING");
     setMultiplier(1.0);
     setLastWin(0);
     startTimeRef.current = Date.now();
@@ -61,7 +116,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       const currentMultiplier = 1 + Math.pow(elapsed, 2) * 0.1;
 
       if (currentMultiplier >= crashPoint) {
-        setGameState('CRASHED');
+        setGameState("CRASHED");
         setMultiplier(crashPoint);
         return;
       }
@@ -82,14 +137,28 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const handleCashOut = (finalMultiplier: number) => {
     cancelAnimationFrame(requestRef.current!);
     const winAmount = betAmount * finalMultiplier;
-    setBalance((prev) => prev + winAmount);
+
+    const newBalance = balance + winAmount;
+    const newTotalWon = totalWon + winAmount;
+
+    setBalance(newBalance);
+    setTotalWon(newTotalWon);
+
+    saveToLocal({
+      balance: newBalance,
+      totalWagered,
+      gamesPlayed,
+      totalWon: newTotalWon,
+      lastBonusClaimTime,
+    });
+
     setLastWin(winAmount);
-    setGameState('CASHOUT');
+    setGameState("CASHOUT");
     setMultiplier(finalMultiplier);
   };
 
   const cashOut = () => {
-    if (gameState === 'FLYING') {
+    if (gameState === "FLYING") {
       handleCashOut(multiplier);
     }
   };
@@ -106,8 +175,18 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    setBalance((prev) => prev + 10);
+    const newBalance = balance + 10;
+    setBalance(newBalance);
     setLastBonusClaimTime(now);
+
+    // Explicitly save lastBonusClaimTime to local storage
+    saveToLocal({
+      balance: newBalance,
+      totalWagered,
+      gamesPlayed,
+      totalWon,
+      lastBonusClaimTime: now,
+    });
   };
 
   useEffect(() => {
@@ -129,6 +208,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         lastWin,
         claimBonus,
         lastBonusClaimTime,
+        totalWagered,
+        gamesPlayed,
+        totalWon,
       }}
     >
       {children}
@@ -139,7 +221,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 export const useGame = () => {
   const context = useContext(GameContext);
   if (!context) {
-    throw new Error('useGame must be used within a GameProvider');
+    throw new Error("useGame must be used within a GameProvider");
   }
   return context;
 };
