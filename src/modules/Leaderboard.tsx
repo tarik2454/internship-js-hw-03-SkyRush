@@ -1,48 +1,84 @@
+import { useEffect, useState } from "react";
 import { LeaderBoard } from "@/shared/icons/leaserboard";
 import { Place1 } from "@/shared/icons/place1";
 import { Place2 } from "@/shared/icons/place2";
 import { Place3 } from "@/shared/icons/place3";
+import { getAllUsers, type User } from "@/config/authApi";
 import styles from "./Leaderboard.module.scss";
 
-const MOCK_LEADERS = [
-  {
-    rank: 1,
-    username: "SkyMaster99",
-    gamesPlayed: 10,
-    balance: 5000.0,
-    winRate: "50%",
-  },
-  {
-    rank: 2,
-    username: "RocketMan",
-    gamesPlayed: 5,
-    balance: 2500.0,
-    winRate: "25%",
-  },
-  {
-    rank: 3,
-    username: "LuckyDucky",
-    gamesPlayed: 3,
-    balance: 1000.0,
-    winRate: "10%",
-  },
-  {
-    rank: 4,
-    username: "CrashKing",
-    gamesPlayed: 2,
-    balance: 500.0,
-    winRate: "5%",
-  },
-  {
-    rank: 5,
-    username: "MoonWalker",
-    gamesPlayed: 1,
-    balance: 250.0,
-    winRate: "2%",
-  },
-];
+interface LeaderboardUser extends User {
+  rank: number;
+  winRate: string;
+}
 
 export const Leaderboard = () => {
+  const [leaders, setLeaders] = useState<LeaderboardUser[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setError("No authentication token found");
+          setLoading(false);
+          return;
+        }
+
+        const users = await getAllUsers(token);
+
+        // Sort users by balance in descending order and add ranks
+        const sortedUsers = users
+          .sort((a, b) => b.balance - a.balance)
+          .map((user, index) => ({
+            ...user,
+            rank: index + 1,
+            // For now, keep winRate static or you can calculate it based on some logic
+            winRate: `${Math.floor(Math.random() * 100)}%`,
+          }));
+
+        setLeaders(sortedUsers);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch users:", err);
+        setError("Failed to load leaderboard");
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+  if (loading) {
+    return (
+      <section className={styles.leaderboarSection}>
+        <div className={styles.leaderboardHeader}>
+          <LeaderBoard />
+          <div>
+            <h2 className={styles.title}>Leaderboard</h2>
+            <h3 className={styles.subtitle}>Top players</h3>
+          </div>
+        </div>
+        <div className={styles.loading}>Loading leaderboard...</div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className={styles.leaderboarSection}>
+        <div className={styles.leaderboardHeader}>
+          <LeaderBoard />
+          <div>
+            <h2 className={styles.title}>Leaderboard</h2>
+            <h3 className={styles.subtitle}>Top players</h3>
+          </div>
+        </div>
+        <div className={styles.error}>{error}</div>
+      </section>
+    );
+  }
+
   return (
     <section className={styles.leaderboarSection}>
       <div className={styles.leaderboardHeader}>
@@ -54,9 +90,9 @@ export const Leaderboard = () => {
       </div>
 
       <ul className={styles.listContainer}>
-        {MOCK_LEADERS.map((player) => (
+        {leaders.map((player) => (
           <li
-            key={player.rank}
+            key={player._id}
             className={player.rank <= 3 ? styles.topRank : ""}
           >
             <div className={styles.rank}>
@@ -74,10 +110,12 @@ export const Leaderboard = () => {
             <div className={styles.playerInfo}>
               <div>
                 <div className={styles.username}>{player.username}</div>
-                <div className={styles.gamesPlayed}>{player.gamesPlayed}</div>
+                <div className={styles.gamesPlayed}>
+                  {player.gamesPlayed} games
+                </div>
               </div>
               <div>
-                <div className={styles.win}>${player.win.toFixed(0)}</div>
+                <div className={styles.win}>${player.balance.toFixed(0)}</div>
                 <div className={styles.winRate}>{player.winRate} win</div>
               </div>
             </div>

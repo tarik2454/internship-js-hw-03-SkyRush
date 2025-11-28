@@ -54,6 +54,22 @@ export const updateUser = async (data: UpdateUserFormData, token: string) => {
   return res.data;
 };
 
+export interface User {
+  _id: string;
+  username: string;
+  gamesPlayed: number;
+  balance: number;
+}
+
+export const getAllUsers = async (token: string): Promise<User[]> => {
+  const res = await API.get("/users/users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};
+
 // export const API = axios.create({
 //   baseURL: "https://drink-master-project.onrender.com/",
 // });

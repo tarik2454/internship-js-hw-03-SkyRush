@@ -106,3 +106,17 @@
   color: $color-secondary;
   border-top: 1px solid rgba(49, 65, 88, 1);
 }
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: $color-secondary;
+  font-size: 16px;
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+  color: #ff6b6b;
+  font-size: 16px;
+}
