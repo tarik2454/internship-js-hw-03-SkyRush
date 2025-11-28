@@ -1,4 +1,4 @@
-export function Place2() {
+export function Place3() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
