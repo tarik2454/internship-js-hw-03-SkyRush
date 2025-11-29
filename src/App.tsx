@@ -13,7 +13,6 @@ import { HomePage } from "./pages/HomePage";
 import { ProtectedRoute } from "./shared/ProtectedRoute";
 import { initAuthToken } from "./config/authApi";
 
-// Initialize auth token from localStorage on app startup
 initAuthToken();
 
 function App() {
