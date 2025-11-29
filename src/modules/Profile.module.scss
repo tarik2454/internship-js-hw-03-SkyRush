@@ -1,8 +1,5 @@
-@use '../styles/variables' as *;
-@use '../styles/mixins' as *;
-
-.profileContainer {
-}
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
 
 .profileTitle {
   margin-bottom: 9px;
@@ -55,6 +52,8 @@
 }
 
 .characters {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 8px;
   color: #90a1b9;
   font-size: 12px;

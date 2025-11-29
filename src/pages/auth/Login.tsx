@@ -49,11 +49,11 @@ export const Login = () => {
             type="text"
             placeholder="Email"
             {...register("email")}
-            className={errors.email ? styles.errorInput : ""}
+            className={errors.email ? "errorInput" : ""}
           />
         </div>
         {errors.email && (
-          <span className={styles.errorMessage}>{errors.email.message}</span>
+          <span className="errorMessage">{errors.email.message}</span>
         )}
       </div>
 
@@ -65,11 +65,11 @@ export const Login = () => {
             type="password"
             placeholder="Password"
             {...register("password")}
-            className={errors.password ? styles.errorInput : ""}
+            className={errors.password ? "errorInput" : ""}
           />
         </div>
         {errors.password && (
-          <span className={styles.errorMessage}>{errors.password.message}</span>
+          <span className="errorMessage">{errors.password.message}</span>
         )}
       </div>
 

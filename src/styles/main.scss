@@ -43,7 +43,7 @@ button {
   border: 1px solid transparent;
   border-radius: 8px;
   background-color: $color-bg-secondary;
-  color: $color-text;
+  color: $color-primary;
   font-weight: 500;
   font-size: 1em;
   font-family: inherit;
@@ -56,5 +56,32 @@ button {
   &:focus,
   &:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
+  }
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 4px;
+  color: $color-danger;
+  font-size: 0.85rem;
+  animation: slideDown 0.2s ease-out;
+}
+
+.errorInput {
+  border-color: $color-danger !important;
+
+  &:focus {
+    box-shadow: 0 0 0 2px rgba($color-danger, 0.2) !important;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

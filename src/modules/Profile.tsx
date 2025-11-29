@@ -18,6 +18,7 @@ export const Profile = () => {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
@@ -67,6 +68,10 @@ export const Profile = () => {
     }
   };
 
+  const usernameValue = watch("username");
+  const maxChars = 20;
+  const remainingChars = maxChars - (usernameValue?.length || 0);
+
   return (
     <div className={styles.profileContainer}>
       <p className={styles.profileTitle}>Profile Settings</p>
@@ -84,22 +89,21 @@ export const Profile = () => {
             <input
               id="username"
               type="text"
+              maxLength={20}
               placeholder={isLoadingUser ? "Loading..." : "Username"}
               disabled={isLoadingUser}
               {...register("username")}
-              className={errors.username ? styles.errorInput : ""}
+              className={errors.username ? "errorInput" : ""}
             />
           </div>
           {errors.username && (
-            <span className={styles.errorMessage}>
-              {errors.username.message}
-            </span>
+            <span className="errorMessage">{errors.username.message}</span>
           )}
         </div>
       </form>
 
       <div className={styles.characters}>
-        4/20 <span>characters</span>
+        {remainingChars}/20 <span>characters</span>
       </div>
 
       <div className={styles.amountStats}>

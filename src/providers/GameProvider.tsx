@@ -3,8 +3,8 @@ import {
   useContext,
   useState,
   useEffect,
-  type ReactNode,
   useRef,
+  type ReactNode,
 } from "react";
 import { getCurrentUser, hasToken } from "@/config/authApi";
 import { toast } from "react-toastify";
@@ -33,85 +33,74 @@ interface GameContextType {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
-  const [balance, setBalance] = useState<number>(100.0);
-  const [betAmount, setBetAmount] = useState<number>(10);
-  const [multiplier, setMultiplier] = useState<number>(1.0);
+  const [balance, setBalance] = useState(100);
+  const [betAmount, setBetAmount] = useState(10);
+  const [multiplier, setMultiplier] = useState(1);
   const [gameState, setGameState] = useState<GameState>("IDLE");
-  const [autoCashOut, setAutoCashOut] = useState<number>(2.0);
-  const [lastWin, setLastWin] = useState<number>(0);
+  const [autoCashOut, setAutoCashOut] = useState(2);
+  const [lastWin, setLastWin] = useState(0);
   const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
     null
   );
-  const [totalWagered, setTotalWagered] = useState<number>(0);
-  const [gamesPlayed, setGamesPlayed] = useState<number>(0);
-  const [totalWon, setTotalWon] = useState<number>(0);
+  const [totalWagered, setTotalWagered] = useState(0);
+  const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [totalWon, setTotalWon] = useState(0);
 
   const requestRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
-
   const STORAGE_KEY = "sky_rush_game_data";
 
   useEffect(() => {
-    const initGameData = async () => {
-      if (hasToken()) {
-        try {
-          const userData = await getCurrentUser();
-
-          setBalance(userData.balance ?? 100);
-          setTotalWagered(userData.totalWagered ?? 0);
-          setGamesPlayed(userData.gamesPlayed ?? 0);
-          setTotalWon(userData.totalWon ?? 0);
-        } catch (error) {
-          console.error("Failed to fetch user data:", error);
-        }
-      }
-    };
-
-    initGameData();
+    if (!hasToken()) return;
+    getCurrentUser()
+      .then((user) => {
+        setBalance(user.balance ?? 100);
+        setTotalWagered(user.totalWagered ?? 0);
+        setGamesPlayed(user.gamesPlayed ?? 0);
+        setTotalWon(user.totalWon ?? 0);
+      })
+      .catch((err) => console.error("Failed to fetch user data:", err));
   }, []);
 
-  const saveToLocal = (data: {
-    balance: number;
-    totalWagered: number;
-    gamesPlayed: number;
-    totalWon: number;
-    lastBonusClaimTime: number | null;
-  }) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const saveToLocal = () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        balance,
+        totalWagered,
+        gamesPlayed,
+        totalWon,
+        lastBonusClaimTime,
+      })
+    );
+  };
+
+  const updateStats = (
+    newBalance: number,
+    newTotalWon = totalWon,
+    extraWagered = 0,
+    extraGames = 0
+  ) => {
+    setBalance(newBalance);
+    setTotalWon(newTotalWon);
+    setTotalWagered((prev) => prev + extraWagered);
+    setGamesPlayed((prev) => prev + extraGames);
+    saveToLocal();
   };
 
   const startGame = () => {
-    if (balance < betAmount) {
-      alert("Insufficient balance!");
-      return;
-    }
+    if (balance < betAmount) return alert("Insufficient balance!");
 
-    const newBalance = balance - betAmount;
-    const newTotalWagered = totalWagered + betAmount;
-    const newGamesPlayed = gamesPlayed + 1;
-
-    setBalance(newBalance);
-    setTotalWagered(newTotalWagered);
-    setGamesPlayed(newGamesPlayed);
-
-    saveToLocal({
-      balance: newBalance,
-      totalWagered: newTotalWagered,
-      gamesPlayed: newGamesPlayed,
-      totalWon,
-      lastBonusClaimTime,
-    });
+    const crashPoint = 1 + Math.pow(Math.random(), 2) * 9;
+    updateStats(balance - betAmount, totalWon, betAmount, 1);
 
     setGameState("FLYING");
-    setMultiplier(1.0);
+    setMultiplier(1);
     setLastWin(0);
     startTimeRef.current = Date.now();
 
-    const crashPoint = 1 + Math.pow(Math.random(), 2) * 9;
-
     const animate = () => {
-      const now = Date.now();
-      const elapsed = (now - startTimeRef.current!) / 1000;
+      const elapsed = (Date.now() - startTimeRef.current) / 1000;
       const currentMultiplier = 1 + Math.pow(elapsed, 2) * 0.1;
 
       if (currentMultiplier >= crashPoint) {
@@ -133,88 +122,47 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleCashOut = (finalMultiplier: number) => {
-    cancelAnimationFrame(requestRef.current!);
+    cancelAnimationFrame(requestRef.current);
     const winAmount = betAmount * finalMultiplier;
-
-    const newBalance = balance + winAmount;
-    const newTotalWon = totalWon + winAmount;
-
-    setBalance(newBalance);
-    setTotalWon(newTotalWon);
-
-    saveToLocal({
-      balance: newBalance,
-      totalWagered,
-      gamesPlayed,
-      totalWon: newTotalWon,
-      lastBonusClaimTime,
-    });
-
+    updateStats(balance + winAmount, totalWon + winAmount);
     setLastWin(winAmount);
-    setGameState("CASHOUT");
     setMultiplier(finalMultiplier);
+    setGameState("CASHOUT");
   };
 
   const cashOut = () => {
-    if (gameState === "FLYING") {
-      handleCashOut(multiplier);
-    }
+    if (gameState === "FLYING") handleCashOut(multiplier);
   };
 
   const claimBonus = () => {
     const now = Date.now();
-    const COOLDOWN_MS = 60 * 1000;
-
-    if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN_MS) {
-      const remainingSeconds = Math.ceil(
-        (COOLDOWN_MS - (now - lastBonusClaimTime)) / 1000
+    const COOLDOWN = 60 * 1000;
+    if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN) {
+      const remaining = Math.ceil(
+        (COOLDOWN - (now - lastBonusClaimTime)) / 1000
       );
-      toast.warning(
-        `Please wait ${remainingSeconds} seconds before claiming again!`
+      return toast.warning(
+        `Please wait ${remaining} seconds before claiming again!`
       );
-      return;
     }
-
-    const newBalance = balance + 10;
-    setBalance(newBalance);
+    setBalance((prev) => prev + 10);
     setLastBonusClaimTime(now);
-
-    saveToLocal({
-      balance: newBalance,
-      totalWagered,
-      gamesPlayed,
-      totalWon,
-      lastBonusClaimTime: now,
-    });
+    saveToLocal();
   };
 
   const resetAccount = () => {
-    const initialBalance = 100.0;
-    const initialTotalWagered = 0;
-    const initialGamesPlayed = 0;
-    const initialTotalWon = 0;
-
-    setBalance(initialBalance);
-    setTotalWagered(initialTotalWagered);
-    setGamesPlayed(initialGamesPlayed);
-    setTotalWon(initialTotalWon);
+    setBalance(100);
+    setTotalWagered(0);
+    setGamesPlayed(0);
+    setTotalWon(0);
     setLastWin(0);
     setLastBonusClaimTime(null);
     setGameState("IDLE");
-    setMultiplier(1.0);
-
-    saveToLocal({
-      balance: initialBalance,
-      totalWagered: initialTotalWagered,
-      gamesPlayed: initialGamesPlayed,
-      totalWon: initialTotalWon,
-      lastBonusClaimTime: null,
-    });
+    setMultiplier(1);
+    saveToLocal();
   };
 
-  useEffect(() => {
-    return () => cancelAnimationFrame(requestRef.current!);
-  }, []);
+  useEffect(() => () => cancelAnimationFrame(requestRef.current), []);
 
   return (
     <GameContext.Provider
@@ -244,8 +192,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
 export const useGame = () => {
   const context = useContext(GameContext);
-  if (!context) {
-    throw new Error("useGame must be used within a GameProvider");
-  }
+  if (!context) throw new Error("useGame must be used within a GameProvider");
   return context;
 };
