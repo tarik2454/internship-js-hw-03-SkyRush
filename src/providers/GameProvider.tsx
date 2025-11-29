@@ -6,7 +6,7 @@ import {
   useRef,
   type ReactNode,
 } from "react";
-import { getCurrentUser, hasToken } from "@/config/authApi";
+import { getCurrentUser, hasToken } from "../config/authApi";
 import { toast } from "react-toastify";
 
 type GameState = "IDLE" | "BETTING" | "FLYING" | "CRASHED" | "CASHOUT";

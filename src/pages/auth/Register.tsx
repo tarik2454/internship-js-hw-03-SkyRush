@@ -3,9 +3,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import styles from "./Auth.module.scss";
-import { registerSchema, type RegisterFormData } from "@/lib/validation";
-import { Auth } from "@/shared/icons/auth";
-import { registerUser } from "@/config/authApi";
+import { registerSchema, type RegisterFormData } from "../../lib/validation";
+import { Auth } from "../../shared/icons/auth";
+import { registerUser } from "../../config/authApi";
 import { toast } from "react-toastify";
 
 export const Register = () => {

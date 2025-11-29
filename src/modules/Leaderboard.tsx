@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
-import { LeaderBoard } from "@/shared/icons/leaserboard";
-import { getAllUsers, getCurrentUser, type User } from "@/config/authApi";
-import { useGame } from "@/providers/GameProvider";
+import { LeaderBoard } from "../shared/icons/leaserboard";
+import { getAllUsers, getCurrentUser, type User } from "../config/authApi";
+import { useGame } from "../providers/GameProvider";
 import styles from "./Leaderboard.module.scss";
 import { toast } from "react-toastify";
-import { Place1 } from "@/shared/icons/place1";
-import { Place2 } from "@/shared/icons/place2";
-import { Place3 } from "@/shared/icons/place3";
+import { Place1 } from "../shared/icons/place1";
+import { Place2 } from "../shared/icons/place2";
+import { Place3 } from "../shared/icons/place3";
 
 interface LeaderboardUser extends User {
   rank: number;

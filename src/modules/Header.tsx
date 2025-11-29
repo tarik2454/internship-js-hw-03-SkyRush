@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
-import { useGame } from "@/providers/GameProvider";
-import { logoutUser } from "@/config/authApi";
+import { useGame } from "../providers/GameProvider";
+import { logoutUser } from "../config/authApi";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { Logo } from "@/shared/icons/logo";
-import Container from "@/shared/Container";
-import { Wallet } from "@/shared/icons/wallet";
-import { Settings } from "@/shared/icons/settings";
-import { Auth } from "@/shared/icons/auth";
-import Modal from "@/shared/Modal";
+import { Logo } from "../shared/icons/logo";
+import Container from "../shared/Container";
+import { Wallet } from "../shared/icons/wallet";
+import { Settings } from "../shared/icons/settings";
+import { Auth } from "../shared/icons/auth";
+import Modal from "../shared/Modal";
 import { Profile } from "./Profile";
 
 export const Header = () => {

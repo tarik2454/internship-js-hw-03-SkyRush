@@ -2,12 +2,12 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import styles from "./Profile.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@/shared/icons/user";
+import { User } from "../shared/icons/user";
 import { toast } from "react-toastify";
-import { getCurrentUser, updateUser } from "@/config/authApi";
+import { getCurrentUser, updateUser } from "../config/authApi";
 import { AxiosError } from "axios";
-import { useGame } from "@/providers/GameProvider";
-import { updateUserSchema, type UpdateUserFormData } from "@/lib/validation";
+import { useGame } from "../providers/GameProvider";
+import { updateUserSchema, type UpdateUserFormData } from "../lib/validation";
 
 export const Profile = () => {
   const [isLoadingUser, setIsLoadingUser] = useState(true);

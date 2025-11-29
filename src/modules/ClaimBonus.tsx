@@ -1,7 +1,7 @@
-import { Bonus } from "@/shared/icons/bonus";
+import { Bonus } from "../shared/icons/bonus";
 import styles from "./ClaimBonus.module.scss";
-import { Timer } from "@/shared/icons/timer";
-import { useGame } from "@/providers/GameProvider";
+import { Timer } from "../shared/icons/timer";
+import { useGame } from "../providers/GameProvider";
 import { useState, useEffect } from "react";
 
 export const ClaimBonus = () => {
@@ -23,10 +23,8 @@ export const ClaimBonus = () => {
       setTimeRemaining(Math.ceil(remaining / 1000));
     };
 
-   
     updateTimer();
 
-    
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);

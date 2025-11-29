@@ -1,6 +1,5 @@
-import { useGame } from '@/providers/GameProvider';
-import styles from './GameCanvas.module.scss';
-// import { Minus, Plus } from "lucide-react";
+import { useGame } from "../providers/GameProvider";
+import styles from "./GameCanvas.module.scss";
 
 export const GameCanvas = () => {
   const {
@@ -9,13 +8,11 @@ export const GameCanvas = () => {
     lastWin,
     betAmount,
     setBetAmount,
-    // autoCashOut,
-    // setAutoCashOut,
     startGame,
     gameState,
   } = useGame();
 
-  const isGameActive = gameState === 'FLYING';
+  const isGameActive = gameState === "FLYING";
 
   return (
     <section className={styles.canvasWrapper}>
@@ -23,15 +20,15 @@ export const GameCanvas = () => {
         <div className={styles.multiplierContainer}>
           <span
             className={`${styles.multiplier} ${
-              gameState === 'CRASHED' ? styles.crashed : ''
-            } ${gameState === 'CASHOUT' ? styles.success : ''}`}
+              gameState === "CRASHED" ? styles.crashed : ""
+            } ${gameState === "CASHOUT" ? styles.success : ""}`}
           >
             {multiplier.toFixed(2)}x
           </span>
-          {gameState === 'CRASHED' && (
+          {gameState === "CRASHED" && (
             <div className={styles.crashedText}>CRASHED</div>
           )}
-          {gameState === 'CASHOUT' && (
+          {gameState === "CASHOUT" && (
             <div className={styles.winText}>YOU WON ${lastWin.toFixed(2)}</div>
           )}
         </div>
@@ -54,11 +51,11 @@ export const GameCanvas = () => {
           </div>
 
           <div>
-            {gameState === 'IDLE' ||
-            gameState === 'CRASHED' ||
-            gameState === 'CASHOUT' ? (
+            {gameState === "IDLE" ||
+            gameState === "CRASHED" ||
+            gameState === "CASHOUT" ? (
               <button onClick={startGame} className={styles.startBtn}>
-                {gameState === 'IDLE' ? 'Start' : 'Start Again'}
+                {gameState === "IDLE" ? "Start" : "Start Again"}
               </button>
             ) : (
               <button onClick={cashOut} className={styles.cashoutBtn}>

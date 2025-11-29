@@ -2,7 +2,7 @@ import type {
   LoginFormData,
   RegisterFormData,
   UpdateUserFormData,
-} from "@/lib/validation";
+} from "../lib/validation";
 import axios from "axios";
 
 export const API = axios.create({
