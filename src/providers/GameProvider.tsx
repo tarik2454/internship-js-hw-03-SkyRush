@@ -6,7 +6,8 @@ import {
   type ReactNode,
   useRef,
 } from "react";
-import { getCurrentUser } from "@/config/authApi";
+import { getCurrentUser, hasToken } from "@/config/authApi";
+import { toast } from "react-toastify";
 
 type GameState = "IDLE" | "BETTING" | "FLYING" | "CRASHED" | "CASHOUT";
 
@@ -26,6 +27,7 @@ interface GameContextType {
   totalWagered: number;
   gamesPlayed: number;
   totalWon: number;
+  resetAccount: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -51,10 +53,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const initGameData = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
+      if (hasToken()) {
         try {
-          const userData = await getCurrentUser(token);
+          const userData = await getCurrentUser();
 
           setBalance(userData.balance ?? 100);
           setTotalWagered(userData.totalWagered ?? 0);
@@ -106,8 +107,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setLastWin(0);
     startTimeRef.current = Date.now();
 
-    // Determine crash point randomly between 1.00 and 10.00
-    // Biased towards lower numbers for realism
     const crashPoint = 1 + Math.pow(Math.random(), 2) * 9;
 
     const animate = () => {
@@ -121,7 +120,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
 
-      // Auto Cash Out Logic
       if (autoCashOut > 1 && currentMultiplier >= autoCashOut) {
         handleCashOut(currentMultiplier);
         return;
@@ -165,13 +163,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
   const claimBonus = () => {
     const now = Date.now();
-    const COOLDOWN_MS = 60 * 1000; // 1 minute in milliseconds
+    const COOLDOWN_MS = 60 * 1000;
 
     if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN_MS) {
       const remainingSeconds = Math.ceil(
         (COOLDOWN_MS - (now - lastBonusClaimTime)) / 1000
       );
-      alert(`Please wait ${remainingSeconds} seconds before claiming again!`);
+      toast.warning(
+        `Please wait ${remainingSeconds} seconds before claiming again!`
+      );
       return;
     }
 
@@ -179,13 +179,36 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setBalance(newBalance);
     setLastBonusClaimTime(now);
 
-    // Explicitly save lastBonusClaimTime to local storage
     saveToLocal({
       balance: newBalance,
       totalWagered,
       gamesPlayed,
       totalWon,
       lastBonusClaimTime: now,
+    });
+  };
+
+  const resetAccount = () => {
+    const initialBalance = 100.0;
+    const initialTotalWagered = 0;
+    const initialGamesPlayed = 0;
+    const initialTotalWon = 0;
+
+    setBalance(initialBalance);
+    setTotalWagered(initialTotalWagered);
+    setGamesPlayed(initialGamesPlayed);
+    setTotalWon(initialTotalWon);
+    setLastWin(0);
+    setLastBonusClaimTime(null);
+    setGameState("IDLE");
+    setMultiplier(1.0);
+
+    saveToLocal({
+      balance: initialBalance,
+      totalWagered: initialTotalWagered,
+      gamesPlayed: initialGamesPlayed,
+      totalWon: initialTotalWon,
+      lastBonusClaimTime: null,
     });
   };
 
@@ -211,6 +234,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         totalWagered,
         gamesPlayed,
         totalWon,
+        resetAccount,
       }}
     >
       {children}

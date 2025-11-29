@@ -10,6 +10,10 @@ import { Login } from "@/pages/auth/Login";
 import { Register } from "@/pages/auth/Register";
 import { RootLayout } from "@/layouts/RootLayout";
 import { HomePage } from "@/pages/HomePage";
+import { initAuthToken } from "@/config/authApi";
+
+// Initialize auth token from localStorage on app startup
+initAuthToken();
 
 function App() {
   return (

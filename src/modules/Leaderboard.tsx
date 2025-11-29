@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { LeaderBoard } from "@/shared/icons/leaserboard";
 import { Place1 } from "@/shared/icons/place1";
 import { Place2 } from "@/shared/icons/place2";
@@ -14,70 +14,55 @@ interface LeaderboardUser extends User {
 }
 
 export const Leaderboard = () => {
-  const [leaders, setLeaders] = useState<LeaderboardUser[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [apiUsers, setApiUsers] = useState<User[]>([]);
-  const [winRateMap, setWinRateMap] = useState<Map<string, string>>(new Map());
   const {
     balance: currentBalance,
     gamesPlayed: currentGamesPlayed,
     totalWon,
+    totalWagered: currentTotalWagered,
   } = useGame();
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required. Please login again.");
-        return;
-      }
+      try {
+        let currentUsername: string | null = null;
 
-      let currentUsername: string | null = null;
+        const currentUser = await getCurrentUser();
+        currentUsername = currentUser.username;
 
-      const currentUser = await getCurrentUser(token);
-      currentUsername = currentUser.username;
+        const users = await getAllUsers();
+        setApiUsers(users);
 
-      const users = await getAllUsers(token);
-      setApiUsers(users);
-
-      // Calculate winRate once for each user and store in Map
-      const newWinRateMap = new Map<string, string>();
-      users.forEach((user) => {
-        // Calculate win rate based on totalWon and totalWagered
-        const totalWagered = user.totalWagered ?? 0;
-        const totalWon = user.totalWon ?? 0;
-        const winRate =
-          totalWagered > 0 ? Math.floor((totalWon / totalWagered) * 100) : 0;
-        newWinRateMap.set(user._id, `${winRate}%`);
-      });
-      setWinRateMap(newWinRateMap);
-
-      // Find current user by username in the users list
-      if (currentUsername) {
-        const matchedUser = users.find(
-          (user) => user.username === currentUsername
-        );
-        if (matchedUser) {
-          setCurrentUserId(matchedUser._id);
-        } else {
-          console.error(
-            "Could not find current user in users list by username"
+        if (currentUsername) {
+          const matchedUser = users.find(
+            (user) => user.username === currentUsername
           );
+          if (matchedUser) {
+            setCurrentUserId(matchedUser._id);
+          } else {
+            console.error(
+              "Could not find current user in users list by username"
+            );
+          }
+        } else {
+          const matchedUser = users.find(
+            (user) => Math.abs(user.balance - currentBalance) < 0.01
+          );
+          if (matchedUser) {
+            setCurrentUserId(matchedUser._id);
+          }
         }
-      } else {
-        const matchedUser = users.find(
-          (user) => Math.abs(user.balance - currentBalance) < 0.01
-        );
-        if (matchedUser) {
-          setCurrentUserId(matchedUser._id);
-        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+        toast.error("Failed to load leaderboard data");
       }
     };
 
     fetchUsers();
-  }, []);
+  }, [currentBalance]);
 
-  useEffect(() => {
+  const leaders: LeaderboardUser[] = useMemo(() => {
     // Recalculate balances and ranks dynamically without API calls
     const updatedUsers = apiUsers.map((user) => {
       let calculatedBalance = user.balance;
@@ -96,24 +81,46 @@ export const Leaderboard = () => {
       };
     });
 
-    // Sort by balance and assign ranks dynamically
+    // Sort by balance and assign ranks dynamically, take top 8
     const sortedUsers = updatedUsers
       .sort((a, b) => b.balance - a.balance)
-      .map((user, index) => ({
-        ...user,
-        rank: index + 1,
-        // Use static winRate from Map (calculated once on load)
-        winRate: winRateMap.get(user._id) || "0%",
-      }));
+      .slice(0, 8)
+      .map((user, index) => {
+        // Calculate winRate dynamically for each user
+        let calculatedWinRate: string;
+        if (currentUserId && user._id === currentUserId) {
+          // For current user, use real-time data from GameProvider
+          const winRateValue =
+            currentTotalWagered > 0
+              ? Math.floor((totalWon / currentTotalWagered) * 100)
+              : 0;
+          calculatedWinRate = `${winRateValue}%`;
+        } else {
+          // For other users, calculate from their stored data
+          const userTotalWagered = user.totalWagered ?? 0;
+          const userTotalWon = user.totalWon ?? 0;
+          const winRateValue =
+            userTotalWagered > 0
+              ? Math.floor((userTotalWon / userTotalWagered) * 100)
+              : 0;
+          calculatedWinRate = `${winRateValue}%`;
+        }
 
-    setLeaders(sortedUsers);
+        return {
+          ...user,
+          rank: index + 1,
+          winRate: calculatedWinRate,
+        };
+      });
+
+    return sortedUsers;
   }, [
     apiUsers,
     currentUserId,
     currentBalance,
     currentGamesPlayed,
     totalWon,
-    winRateMap,
+    currentTotalWagered,
   ]);
 
   return (

@@ -24,13 +24,9 @@ export const Header = () => {
   const handleLogout = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      if (token) {
-        await logoutUser(token);
-        toast.success("Successfully logged out!");
-      }
+      await logoutUser();
+      toast.success("Successfully logged out!");
       localStorage.removeItem("sky_rush_game_data");
-      localStorage.removeItem("token");
       navigate("/auth/login");
     } catch (error) {
       console.error("Logout error:", error);

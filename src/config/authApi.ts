@@ -5,54 +5,21 @@ import type {
 } from "@/lib/validation";
 import axios from "axios";
 
-const API = axios.create({
+export const API = axios.create({
   baseURL: "https://backend-internship-js-hw-03-sky-rus.vercel.app/api",
 });
 
+export const hasToken = () => localStorage.getItem("token") !== null;
+
+export const initAuthToken = () => {
+  const token = localStorage.getItem("token");
+  if (token) API.defaults.headers.common.Authorization = `Bearer ${token}`;
+};
+
+// Types
 export interface AuthResponse {
   token: string;
 }
-
-export const registerUser = async (data: RegisterFormData) => {
-  const res = await API.post("/users/register", data);
-  return res.data;
-};
-
-export const loginUser = async (data: LoginFormData) => {
-  const res = await API.post("/users/login", data);
-  return res.data;
-};
-
-export const getCurrentUser = async (token: string) => {
-  const res = await API.get("/users/current", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
-};
-
-export const logoutUser = async (token: string) => {
-  const res = await API.post(
-    "/users/logout",
-    {},
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return res.data;
-};
-
-export const updateUser = async (data: UpdateUserFormData, token: string) => {
-  const res = await API.patch("/users/update", data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
-};
 
 export interface User {
   _id: string;
@@ -63,23 +30,29 @@ export interface User {
   totalWon: number;
 }
 
-export const getAllUsers = async (token: string): Promise<User[]> => {
-  const res = await API.get("/users/users", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return res.data;
+// API functions
+export const registerUser = async (data: RegisterFormData) =>
+  (await API.post("/users/register", data)).data;
+
+export const loginUser = async (data: LoginFormData) => {
+  const response = await API.post("/users/login", data);
+  localStorage.setItem("token", response.data.token);
+  API.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+  return response.data;
 };
 
-// export const API = axios.create({
-//   baseURL: "https://drink-master-project.onrender.com/",
-// });
+export const getCurrentUser = async () =>
+  (await API.get("/users/current")).data;
 
-// export const setToken = (token) => {
-//   API.defaults.headers.common.Authorization = `Bearer ${token}`;
-// };
+export const logoutUser = async () => {
+  const response = await API.post("/users/logout");
+  localStorage.removeItem("token");
+  API.defaults.headers.common.Authorization = "";
+  return response.data;
+};
 
-// export const clearToken = () => {
-//   API.defaults.headers.common.Authorization = ``;
-// };
+export const updateUser = async (data: UpdateUserFormData) =>
+  (await API.patch("/users/update", data)).data;
+
+export const getAllUsers = async (): Promise<User[]> =>
+  (await API.get("/users/users")).data;

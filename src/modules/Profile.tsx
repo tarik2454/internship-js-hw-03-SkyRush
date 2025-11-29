@@ -11,7 +11,8 @@ import { updateUserSchema, type UpdateUserFormData } from "@/lib/validation";
 
 export const Profile = () => {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const { balance, totalWagered, gamesPlayed, totalWon } = useGame();
+  const { balance, totalWagered, gamesPlayed, totalWon, resetAccount } =
+    useGame();
 
   const {
     register,
@@ -28,11 +29,7 @@ export const Profile = () => {
   useEffect(() => {
     const loadUserData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          return;
-        }
-        const userData = await getCurrentUser(token);
+        const userData = await getCurrentUser();
         setValue("username", userData.username);
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
@@ -52,22 +49,13 @@ export const Profile = () => {
 
   const onSubmit = async (data: UpdateUserFormData) => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("Authentication required. Please login again.");
-        return;
-      }
-
-      await updateUser(
-        {
-          username: data.username,
-          balance,
-          totalWagered,
-          gamesPlayed,
-          totalWon,
-        },
-        token
-      );
+      await updateUser({
+        username: data.username,
+        balance,
+        totalWagered,
+        gamesPlayed,
+        totalWon,
+      });
       toast.success("Profile updated successfully!");
     } catch (err: unknown) {
       console.error(err);
@@ -148,6 +136,7 @@ export const Profile = () => {
         <button
           className={styles.resetBtn}
           disabled={isSubmitting || isLoadingUser}
+          onClick={() => resetAccount()}
         >
           {isSubmitting ? "Reseting Account..." : "Reset Account"}
         </button>
