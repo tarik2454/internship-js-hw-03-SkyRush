@@ -1,0 +1,37 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.authContainer {
+  @include flex-center;
+  height: 100vh;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  padding: 33px;
+  border: 1px solid rgba(0, 122, 85, 0.5);
+  border-radius: $radius-14;
+  background: rgba(29, 41, 61, 0.8);
+
+  .header {
+    margin-bottom: 57px;
+
+    .logo {
+      margin-bottom: 16px;
+    }
+
+    .title {
+      margin-bottom: 8px;
+      font-weight: 400;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      color: #90a1b9;
+      font-size: 16px;
+    }
+  }
+}

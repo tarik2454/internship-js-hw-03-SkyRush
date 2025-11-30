@@ -1,0 +1,13 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+
+  @media (min-width: 1280px) {
+    padding: 0 112px;
+  }
+}

@@ -1,0 +1,28 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.homePage {
+  display: grid;
+  grid-template-columns: 1fr 315px;
+  gap: 24px;
+
+  @include mobile {
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr;
+  }
+}
+
+.mainColumn {
+  height: 100%;
+  min-height: 400px;
+}
+
+.controlsColumn {
+  height: 100%;
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

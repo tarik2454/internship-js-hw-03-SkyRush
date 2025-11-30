@@ -1,0 +1,73 @@
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.backdrop {
+  display: flex;
+  visibility: hidden;
+  z-index: 50;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 250ms ease;
+
+  &.open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.content {
+  width: 100%;
+  max-width: 512px;
+  margin: auto 0;
+  padding: 25px;
+  transform: scaleY(0);
+  border: 1px solid rgba(49, 65, 88, 1);
+  border-radius: 10px;
+  background: rgba(15, 23, 43, 1);
+  box-shadow:
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: all 250ms ease;
+
+  &.open {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.closeButton {
+  z-index: 30;
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  border: none;
+  background: none;
+  color: $color-secondary;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+.error {
+  color: $color-danger;
+  font-size: 1.2rem;
+  text-align: center;
+}
