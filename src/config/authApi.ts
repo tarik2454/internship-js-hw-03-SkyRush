@@ -16,7 +16,6 @@ export const initAuthToken = () => {
   if (token) API.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
-// Types
 export interface AuthResponse {
   token: string;
 }
@@ -30,7 +29,6 @@ export interface User {
   totalWon: number;
 }
 
-// API functions
 export const registerUser = async (data: RegisterFormData) =>
   (await API.post("/users/register", data)).data;
 
