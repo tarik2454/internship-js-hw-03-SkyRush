@@ -89,7 +89,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const startGame = () => {
-    if (balance < betAmount) return alert("Insufficient balance!");
+    if (balance < betAmount) return toast.warning("Insufficient balance!");
 
     const crashPoint = 1 + Math.pow(Math.random(), 2) * 9;
     updateStats(balance - betAmount, totalWon, betAmount, 1);

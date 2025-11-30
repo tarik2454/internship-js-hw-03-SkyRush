@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { Place1 } from "../shared/icons/place1";
 import { Place2 } from "../shared/icons/place2";
 import { Place3 } from "../shared/icons/place3";
+import { AxiosError } from "axios";
 
 interface LeaderboardUser extends User {
   rank: number;
@@ -15,7 +16,10 @@ interface LeaderboardUser extends User {
 
 export const Leaderboard = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [apiUsers, setApiUsers] = useState<User[]>([]);
+  const [apiUsers, setApiUsers] = useState<User[]>(() => {
+    const cached = localStorage.getItem("leaderboard_users");
+    return cached ? JSON.parse(cached) : [];
+  });
   const { balance, gamesPlayed, totalWon, totalWagered } = useGame();
 
   useEffect(() => {
@@ -25,14 +29,21 @@ export const Leaderboard = () => {
         const users = await getAllUsers();
 
         setApiUsers(users);
+        localStorage.setItem("leaderboard_users", JSON.stringify(users));
 
         const matchedUser = users.find(
           (u) => u.username === currentUser.username
         );
         if (matchedUser) setCurrentUserId(matchedUser._id);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Failed to fetch users:", err);
-        toast.error("Failed to load leaderboard data");
+        if (err instanceof AxiosError) {
+          toast.error(
+            err.response?.data?.message || "Failed to load leaderboard data"
+          );
+        } else {
+          toast.error("Failed to load leaderboard data");
+        }
       }
     };
 
@@ -46,10 +57,10 @@ export const Leaderboard = () => {
 
         const userBalance = isCurrent ? balance : user.balance;
         const userGames = isCurrent ? gamesPlayed : user.gamesPlayed;
-        const userTotalWon = isCurrent ? totalWon : (user.totalWon ?? 0);
+        const userTotalWon = isCurrent ? totalWon : user.totalWon ?? 0;
         const userTotalWagered = isCurrent
           ? totalWagered
-          : (user.totalWagered ?? 0);
+          : user.totalWagered ?? 0;
 
         const winRate =
           userTotalWagered > 0

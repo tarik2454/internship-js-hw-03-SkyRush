@@ -8,6 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
-    <ToastContainer autoClose={2000} transition={Slide} />
+    <ToastContainer autoClose={1800} transition={Slide} />
   </StrictMode>
 );

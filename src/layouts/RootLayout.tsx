@@ -8,7 +8,7 @@ export const RootLayout = () => {
     <GameProvider>
       <div className={styles.layout}>
         <Header />
-        <main className={styles.main}>
+        <main>
           <Outlet />
         </main>
       </div>

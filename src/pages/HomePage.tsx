@@ -11,7 +11,7 @@ export const HomePage = () => {
     <PageWrapper>
       <Container>
         <div className={styles.homePage}>
-          <div className={styles.mainColumn}>
+          <div>
             <GameList />
             <GameCanvas />
           </div>

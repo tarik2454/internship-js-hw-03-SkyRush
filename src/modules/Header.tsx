@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
 import { useGame } from "../providers/GameProvider";
 import { logoutUser } from "../config/authApi";
@@ -27,6 +27,7 @@ export const Header = () => {
       await logoutUser();
       toast.success("Successfully logged out!");
       localStorage.removeItem("sky_rush_game_data");
+      localStorage.removeItem("leaderboard_users");
       navigate("/auth/login");
     } catch (error) {
       console.error("Logout error:", error);
@@ -41,10 +42,10 @@ export const Header = () => {
       <header className={styles.header}>
         <Container>
           <div className={styles.headerInner}>
-            <div className={styles.logo} onClick={() => navigate("/")}>
+            <Link className={styles.logo} to="/">
               <Logo />
               Rocket Casino
-            </div>
+            </Link>
 
             <div className={styles.headerActions}>
               <div className={styles.balance}>
