@@ -3,33 +3,33 @@
 
 .leaderboardSection {
   padding: 25px;
-  background: rgb(29 41 61 / 50%);
   border: 1px solid rgb(20 71 230 / 30%);
   border-radius: 14px;
+  background: rgb(29 41 61 / 50%);
 }
 
 .leaderboardHeader {
   display: flex;
   align-items: center;
-  gap: 12px;
   margin-bottom: 40px;
+  gap: 12px;
 }
 
 .title {
-  font-size: 16px;
   font-weight: 700;
+  font-size: 16px;
 }
 
 .subtitle {
-  font-weight: 500;
   color: #cad5e2;
+  font-weight: 500;
 }
 
 .listContainer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   min-height: 168px;
+  gap: 8px;
 
   &::after {
     display: block;
@@ -42,14 +42,14 @@
 
   li {
     display: grid;
-    align-items: center;
     grid-template-columns: 20px 1fr;
-    gap: 12px;
+    align-items: center;
     padding: 12px;
-    background: rgb(15 23 43 / 50%);
-    border-radius: 10px;
-    transition: $transition-base;
     overflow-y: hidden;
+    gap: 12px;
+    border-radius: 10px;
+    background: rgb(15 23 43 / 50%);
+    transition: $transition-base;
 
     &:hover {
       background: linear-gradient(
@@ -64,71 +64,65 @@
 .playerInfo {
   display: grid;
   grid-template-columns: 1fr 30%;
-  gap: 12px;
   width: 100%;
+  gap: 12px;
 }
 
 .username {
-  font-size: 16px;
   font-weight: 700;
+  font-size: 16px;
 }
 
 .gamesPlayed {
-  font-size: 12px;
-  font-weight: 500;
   color: $color-secondary;
+  font-weight: 500;
+  font-size: 12px;
 }
 
 .win {
-  font-size: 16px;
-  font-weight: 700;
-  color: transparent;
-  background: linear-gradient(
-    90deg,
-    #0000 0%,
-    #51a2ffff 0%,
-    #c27affff 100%
-  );
-  background-clip: text;
-
   -webkit-text-fill-color: transparent;
+  background: linear-gradient(90deg, #0000 0%, #51a2ffff 0%, #c27affff 100%);
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .winRate {
-  font-size: 12px;
-  font-weight: 500;
   color: #90a1b9;
+  font-weight: 500;
+  font-size: 12px;
 }
 
 .currentUser {
-  background: rgba($color-primary, 0.1) !important;
   border: 2px solid $color-primary !important;
+  background: rgba($color-primary, 0.1) !important;
 
   .username {
-    font-weight: 700;
     color: $color-primary;
+    font-weight: 700;
   }
 }
 
 .ownRank {
   display: block;
   padding-top: 18px;
+  border-top: 1px solid rgb(49 65 88 / 100%);
+  color: $color-secondary;
   font-weight: 500;
   text-align: center;
-  color: $color-secondary;
-  border-top: 1px solid rgb(49 65 88 / 100%);
 }
 
 .loading {
   padding: 40px;
+  color: $color-secondary;
   font-size: 16px;
   text-align: center;
-  color: $color-secondary;
 }
 
 .error {
   padding: 40px;
+  color: #ff6b6b;
   font-size: 16px;
   text-align: center;
-  color: #ff6b6b;
 }

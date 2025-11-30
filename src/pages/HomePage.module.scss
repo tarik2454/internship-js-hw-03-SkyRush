@@ -7,8 +7,8 @@
   gap: 24px;
 
   @include mobile {
-    grid-template-columns: 1fr;
     grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr;
   }
 }
 

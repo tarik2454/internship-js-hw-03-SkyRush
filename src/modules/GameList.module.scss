@@ -1,21 +1,21 @@
-@use '../styles/variables' as *;
-@use '../styles/mixins' as *;
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
 
 .gameWrapper {
   margin-bottom: 24px;
   padding: 4.5px 4px 2.5px;
-  background: rgb(29 41 61 / 50%);
   border: 1px solid rgb(20 71 230 / 30%);
   border-radius: $radius-14;
+  background: rgb(29 41 61 / 50%);
 }
 
 .gameButton {
   padding: 4.5px 15px;
+  border: 1px solid rgb(0 0 0 / 0%);
+  border-radius: $radius-14;
   background: linear-gradient(
     90deg,
     rgb(21.32 92.93 251.52 / 100%),
     rgb(152.19 15.74 250.25 / 100%) 100%
   );
-  border: 1px solid rgb(0 0 0 / 0%);
-  border-radius: $radius-14;
 }

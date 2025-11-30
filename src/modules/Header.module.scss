@@ -3,8 +3,8 @@
 
 .header {
   padding: 19px 0;
-  background: rgb(15 23 43 / 80%);
   border-bottom: undefinedpx solid rgb(28 57 142 / 30%);
+  background: rgb(15 23 43 / 80%);
 }
 
 .headerInner {
@@ -14,10 +14,10 @@
 .logo {
   display: flex;
   gap: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  text-decoration: none;
   color: $color-primary;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -28,35 +28,35 @@
 
 .balance {
   @include flex-center;
+  padding: 9px 16px;
 
   gap: 8px;
-  padding: 9px 16px;
+  border: 1px solid rgb(0 122 85 / 50%);
+  border-radius: $radius-10;
   background: linear-gradient(
     90deg,
     rgb(0 78.57 58.61 / 30%),
     rgb(27.81 56.66 142.17 / 30%) 50%,
     rgb(89.43 22.26 139.02 / 30%) 100%
   );
-  border: 1px solid rgb(0 122 85 / 50%);
-  border-radius: $radius-10;
 
   .icon {
     display: flex;
-    justify-content: center;
     align-items: flex-end;
+    justify-content: center;
   }
 
   .amount {
-    font-size: 16px;
     font-weight: 700;
+    font-size: 16px;
   }
 }
 
 .profileBtn {
   padding: 10px;
-  background-color: transparent;
   border: none;
   border-radius: 50%;
+  background-color: transparent;
 
   &:focus,
   &:focus-visible {
@@ -66,10 +66,10 @@
 
 .logoutButton {
   @include flex-center;
+  padding: 6px 10px;
 
   gap: 14px;
-  padding: 6px 10px;
-  background: rgb(29 41 61 / 50%);
   border: 1px solid rgb(49 65 88 / 100%);
   border-radius: 8px;
+  background: rgb(29 41 61 / 50%);
 }

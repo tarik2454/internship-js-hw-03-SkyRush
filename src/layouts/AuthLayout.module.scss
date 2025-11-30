@@ -6,6 +6,7 @@
 
   height: 100vh;
   margin: 0 auto;
+  margin: 0 10px;
   text-align: center;
 }
 
@@ -13,9 +14,9 @@
   width: 100%;
   max-width: 440px;
   padding: 33px;
-  background: rgb(29 41 61 / 80%);
   border: 1px solid rgb(0 122 85 / 50%);
   border-radius: $radius-14;
+  background: rgb(29 41 61 / 80%);
 
   .header {
     margin-bottom: 57px;
@@ -26,13 +27,13 @@
 
     .title {
       margin-bottom: 8px;
-      font-size: 30px;
       font-weight: 400;
+      font-size: 30px;
     }
 
     .subtitle {
-      font-size: 16px;
       color: #90a1b9;
+      font-size: 16px;
     }
   }
 }
