@@ -1,7 +1,7 @@
-import { useGame } from "../providers/GameProvider";
-import styles from "./GameCanvas.module.scss";
+import { useGame } from "../../providers/GameProvider";
+import styles from "./GameRocket.module.scss";
 
-export const GameCanvas = () => {
+export const GameRocket = () => {
   const {
     multiplier,
     cashOut,
@@ -15,7 +15,7 @@ export const GameCanvas = () => {
   const isGameActive = gameState === "FLYING";
 
   return (
-    <section className={styles.canvasWrapper}>
+    <section>
       <div className={styles.gameArea}>
         <div className={styles.multiplierContainer}>
           <span
@@ -38,7 +38,7 @@ export const GameCanvas = () => {
         </div>
       </div>
 
-      <div className={styles.controls}>
+      <div>
         <p className={styles.label}>Bet Amount</p>
         <div className={styles.controlGroup}>
           <div className={styles.inputWrapper}>

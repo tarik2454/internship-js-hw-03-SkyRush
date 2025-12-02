@@ -1,7 +1,7 @@
-import { Bonus } from "../shared/icons/bonus";
+import { Bonus } from "../../shared/icons/bonus";
 import styles from "./ClaimBonus.module.scss";
-import { Timer } from "../shared/icons/timer";
-import { useGame } from "../providers/GameProvider";
+import { Timer } from "../../shared/icons/timer";
+import { useGame } from "../../providers/GameProvider";
 import { useState, useEffect } from "react";
 
 export const ClaimBonus = () => {
@@ -16,7 +16,7 @@ export const ClaimBonus = () => {
       }
 
       const now = Date.now();
-      const COOLDOWN_MS = 60 * 1000; // 1 minute
+      const COOLDOWN_MS = 60 * 1000;
       const elapsed = now - lastBonusClaimTime;
       const remaining = Math.max(0, COOLDOWN_MS - elapsed);
 

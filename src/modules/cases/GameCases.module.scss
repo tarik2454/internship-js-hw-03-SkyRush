@@ -1,0 +1,253 @@
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
+
+.casesTitle {
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.casesWrapper {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 24px;
+  gap: 16px;
+
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.gameArea {
+  @include flex-center;
+  position: relative;
+  width: 100%;
+  height: 317px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(173, 70, 255, 0.3);
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(14.58, 22.96, 43.04, 1),
+    rgba(27.81, 56.66, 142.17, 0.2) 50%,
+    rgba(89.43, 22.26, 139.02, 0.2) 100%
+  );
+
+  &::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(
+      90deg,
+      #ffffff 0%,
+      #ffffff 33%,
+      #fdc700 33%,
+      #f0b100 80%,
+      #d08700 100%
+    );
+    box-shadow:
+      0px 10px 15px -3px #f0b100,
+      0px 4px 6px -4px #f0b100;
+    content: "";
+  }
+}
+
+.contentGameArea {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  gap: 16px;
+  transform: translate(-50%, -50%);
+}
+
+.contentItemGameArea {
+  @include rarity-styles;
+  @include flex-center;
+  width: 130px;
+  height: 180px;
+  border-top: 2px solid #0000001a;
+  border-radius: $radius-10;
+  background: linear-gradient(135deg, #45556c 0%, #314158 100%);
+  box-shadow: 0px 4px 6px -4px #62748e80;
+  box-shadow: 0px 10px 15px -3px #62748e80;
+}
+
+.contentIconGameArea {
+  font-size: 60px;
+  line-height: 1;
+}
+
+.betBtn {
+  display: block;
+  padding: 18px;
+  border: 1px solid rgba(49, 65, 88, 1);
+  border-radius: 10px;
+  background: rgba(15, 23, 43, 0.5);
+  text-align: center;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover,
+  &.active,
+  &:focus,
+  &:focus-visible {
+    border: 1px solid rgba(43, 127, 255, 1);
+    outline: none;
+    background: linear-gradient(
+      135deg,
+      rgba(21.32, 92.93, 251.52, 0.2),
+      rgba(152.19, 15.74, 250.25, 0.2) 100%
+    );
+  }
+}
+
+.icon {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 48px;
+  line-height: 1;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.title {
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.price {
+  color: #05df72;
+  font-weight: 700;
+}
+
+.startBtn {
+  @include flex-center;
+  width: 100%;
+  margin-bottom: 24px;
+  gap: 17px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 166.08, 61.71, 1),
+    rgba(0, 152.73, 101.74, 1) 100%
+  );
+}
+
+.contentInner {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+.contentTitle {
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.contentItem {
+  width: 68px;
+  padding: 9px;
+  border: 1px solid rgba(69, 85, 108, 0.5);
+  border-radius: 4px;
+  text-align: center;
+
+  @include rarity-styles;
+}
+
+.contentIcon {
+  font-size: 30px;
+}
+
+.rarityGuide {
+  padding: 17px;
+  border: 1px solid rgba(49, 65, 88, 1);
+  border-radius: 10px;
+  background: rgba(15, 23, 43, 0.5);
+}
+
+.rarityTitle {
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.rarityList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 68px;
+}
+
+.rarityItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #cad5e2;
+}
+
+.rarityСircle {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+
+  &.common {
+    background: linear-gradient(
+      135deg,
+      rgba(69.1, 85.19, 108.17, 1),
+      rgba(49.34, 65.09, 87.59, 1) 100%
+    );
+  }
+
+  &.uncommon {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 166.08, 61.71, 1),
+      rgba(0, 130.05, 53.5, 1) 100%
+    );
+  }
+
+  &.rare {
+    background: linear-gradient(
+      135deg,
+      rgba(21.32, 92.93, 251.52, 1),
+      rgba(19.87, 71.18, 229.95, 1) 100%
+    );
+  }
+
+  &.epic {
+    background: linear-gradient(
+      135deg,
+      rgba(152.19, 15.74, 250.25, 1),
+      rgba(130.03, 0, 218.6, 1) 100%
+    );
+  }
+
+  &.legendary {
+    background: linear-gradient(
+      135deg,
+      rgba(229.84, 0, 118.17, 1),
+      rgba(231.15, 0, 10.76, 1) 100%
+    );
+  }
+
+  &.gold {
+    background: linear-gradient(
+      135deg,
+      rgba(240.03, 176.69, 0, 1),
+      rgba(225.36, 113.05, 0, 1) 100%
+    );
+  }
+}
+
+.rarityPercent {
+  color: #62748e;
+}
