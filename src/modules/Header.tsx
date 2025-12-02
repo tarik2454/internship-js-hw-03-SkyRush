@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
-import { logoutUser, getCurrentUser } from "../config/authApi";
-import { useState, useEffect } from "react";
+import { logoutUser } from "../config/authApi";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { Logo } from "../shared/icons/logo";
 import Container from "../shared/Container";
@@ -10,36 +10,11 @@ import { Settings } from "../shared/icons/settings";
 import { Auth } from "../shared/icons/auth";
 import Modal from "../shared/Modal";
 import { Profile } from "./Profile";
+import { useUserStats } from "../hooks/useUserStats";
 
 export const Header = () => {
   const navigate = useNavigate();
-  const [balance, setBalance] = useState(100);
-
-  useEffect(() => {
-    // Загружаем начальный баланс
-    getCurrentUser()
-      .then((user) => setBalance(user.balance ?? 100))
-      .catch((err) => console.error("Failed to fetch user balance:", err));
-  }, []);
-
-  useEffect(() => {
-    // Слушаем событие обновления баланса
-    const handleBalanceUpdate = (event: CustomEvent) => {
-      setBalance(event.detail.balance);
-    };
-
-    window.addEventListener(
-      "balanceUpdate",
-      handleBalanceUpdate as EventListener,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "balanceUpdate",
-        handleBalanceUpdate as EventListener,
-      );
-    };
-  }, []);
+  const { balance } = useUserStats();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

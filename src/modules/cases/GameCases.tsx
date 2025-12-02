@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import { getCurrentUser, updateUser } from "../../config/authApi";
+import { useState, useRef } from "react";
 import { toast } from "react-toastify";
 import { OpenAnimal } from "../../shared/icons/open-animal";
 import styles from "./GameCases.module.scss";
@@ -9,6 +8,7 @@ import {
   spaceContents,
   sportsContents,
 } from "./data/icon-contents";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const GameCases = () => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -16,62 +16,12 @@ export const GameCases = () => {
     index: number;
     offset: number;
   } | null>(null);
-  const [balance, setBalance] = useState(100);
+  const { balance, updateBalance } = useUserStats();
   const [selectedCase, setSelectedCase] = useState<
     "animal" | "space" | "food" | "sports"
   >("animal");
 
   const gameAreaRef = useRef<HTMLDivElement>(null);
-
-  // Загружаем баланс при монтировании компонента
-  useEffect(() => {
-    getCurrentUser()
-      .then((user) => setBalance(user.balance ?? 100))
-      .catch((err) => console.error("Failed to fetch user balance:", err));
-  }, []);
-
-  // Обновляем локальный баланс при получении события
-  useEffect(() => {
-    const handleBalanceUpdate = (event: CustomEvent) => {
-      setBalance(event.detail.balance);
-    };
-
-    window.addEventListener(
-      "balanceUpdate",
-      handleBalanceUpdate as EventListener,
-    );
-
-    return () => {
-      window.removeEventListener(
-        "balanceUpdate",
-        handleBalanceUpdate as EventListener,
-      );
-    };
-  }, []);
-
-  const updateBalance = async (amount: number) => {
-    try {
-      const user = await getCurrentUser();
-      const newBalance = user.balance + amount;
-      // Обновляем баланс через API
-      await updateUser({
-        username: user.username,
-        balance: newBalance,
-        totalWagered: user.totalWagered,
-        gamesPlayed: user.gamesPlayed,
-        totalWon: user.totalWon,
-      });
-
-      // Отправляем событие обновления баланса
-      window.dispatchEvent(
-        new CustomEvent("balanceUpdate", {
-          detail: { balance: newBalance },
-        }),
-      );
-    } catch (error) {
-      console.error("Failed to update balance:", error);
-    }
-  };
 
   const CASE_PRICES = {
     animal: 50,
@@ -156,7 +106,10 @@ export const GameCases = () => {
     }
 
     // Сначала вычитаем стоимость кейса
-    updateBalance(-casePrice);
+    updateBalance(-casePrice, {
+      totalWagered: casePrice,
+      gamesPlayed: 1,
+    });
 
     // Система вероятностей для выбора карточки
     const rarityProbabilities = [
@@ -229,7 +182,9 @@ export const GameCases = () => {
         const casePrice = CASE_PRICES[selectedCase];
 
         // Добавляем стоимость предмета (цена кейса уже вычтена в начале)
-        updateBalance(itemValue);
+        updateBalance(itemValue, {
+          totalWon: itemValue,
+        });
 
         const profit = itemValue - casePrice;
         console.log(
