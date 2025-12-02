@@ -12,6 +12,47 @@ export const GameCases = () => {
   const [selectedCase, setSelectedCase] = useState<
     "animal" | "space" | "food" | "sports"
   >("animal");
+
+  const CASE_PRICES = {
+    animal: 50,
+    space: 75,
+    food: 40,
+    sports: 60,
+  };
+
+  const calculateItemValue = (
+    caseType: "animal" | "space" | "food" | "sports",
+    rarity: string,
+  ) => {
+    const price = CASE_PRICES[caseType];
+    let multiplier = 0;
+
+    switch (rarity) {
+      case "common":
+        multiplier = -0.6; // -60% (Loss)
+        break;
+      case "uncommon":
+        multiplier = -0.2; // -20% (Small Loss)
+        break;
+      case "rare":
+        multiplier = 0.2; // +20% (Profit)
+        break;
+      case "epic":
+        multiplier = 1.0; // +100% (x2)
+        break;
+      case "legendary":
+        multiplier = 2.0; // +200% (x3)
+        break;
+      case "gold":
+        multiplier = 5.0; // +500% (x6)
+        break;
+      default:
+        multiplier = 0;
+    }
+
+    const value = price * (1 + multiplier);
+    return Math.ceil(value);
+  };
   const [isAnimating, setIsAnimating] = useState(false);
   const [lastResult, setLastResult] = useState<{
     index: number;
@@ -126,6 +167,18 @@ export const GameCases = () => {
       setTimeout(() => {
         setIsAnimating(false);
         // Позиция остается зафиксированной благодаря style.transform
+
+        // Calculate and log result
+        const rarity = getItemClassName(targetIndex);
+        const itemValue = calculateItemValue(selectedCase, rarity);
+        const casePrice = CASE_PRICES[selectedCase];
+        const profit = itemValue - casePrice;
+
+        console.log(
+          `Game Finished! Case: ${selectedCase} ($${casePrice}), Item Value: $${itemValue}, Result: ${
+            profit >= 0 ? "+" : ""
+          }${profit}`,
+        );
       }, 1500);
     }
   };
@@ -173,14 +226,19 @@ export const GameCases = () => {
         <div className={styles.contentGameArea} ref={gameAreaRef}>
           {/* Дублируем карточки несколько раз для эффекта бесконечной прокрутки */}
           {Array.from({ length: 10 }).flatMap((_, repeatIndex) =>
-            getCurrentContents().map((item, index) => (
-              <div
-                className={`${styles.contentItemGameArea} ${styles[getItemClassName(index)]}`}
-                key={`${item.id}-${repeatIndex}`}
-              >
-                <div className={styles.contentIconGameArea}>{item.emoji}</div>
-              </div>
-            )),
+            getCurrentContents().map((item, index) => {
+              const rarity = getItemClassName(index);
+              const value = calculateItemValue(selectedCase, rarity);
+              return (
+                <div
+                  className={`${styles.contentItemGameArea} ${styles[rarity]}`}
+                  key={`${item.id}-${repeatIndex}`}
+                >
+                  <div className={styles.contentIconGameArea}>{item.emoji}</div>
+                  <div className={styles.itemValue}>+{value}</div>
+                </div>
+              );
+            }),
           )}
         </div>
       </div>
@@ -208,14 +266,19 @@ export const GameCases = () => {
       <div className={styles.contentWrapper}>
         <p className={styles.contentTitle}>Case Contents</p>
         <div className={styles.contentInner}>
-          {getCurrentContents().map((item, index) => (
-            <div
-              className={`${styles.contentItem} ${styles[getItemClassName(index)]}`}
-              key={item.id}
-            >
-              <div className={styles.contentIcon}>{item.emoji}</div>
-            </div>
-          ))}
+          {getCurrentContents().map((item, index) => {
+            const rarity = getItemClassName(index);
+            const value = calculateItemValue(selectedCase, rarity);
+            return (
+              <div
+                className={`${styles.contentItem} ${styles[rarity]}`}
+                key={item.id}
+              >
+                <div className={styles.contentIcon}>{item.emoji}</div>
+                <div className={styles.itemValueSmall}>+{value}</div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

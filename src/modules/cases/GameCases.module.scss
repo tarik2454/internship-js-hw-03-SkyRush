@@ -84,8 +84,23 @@
 }
 
 .contentIconGameArea {
+  margin-bottom: 8px;
   font-size: 60px;
   line-height: 1;
+}
+
+.itemValue {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 18px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.itemValueSmall {
+  margin-top: 4px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
 }
 
 .betBtn {
