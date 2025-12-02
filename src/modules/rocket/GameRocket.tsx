@@ -21,6 +21,23 @@ export const GameRocket = () => {
       .catch((err) => console.error("Failed to fetch user data:", err));
   }, []);
 
+  useEffect(() => {
+    const handleBalanceUpdate = (event: CustomEvent) => {
+      setBalance(event.detail.balance);
+    };
+
+    window.addEventListener(
+      "balanceUpdate",
+      handleBalanceUpdate as EventListener,
+    );
+    return () => {
+      window.removeEventListener(
+        "balanceUpdate",
+        handleBalanceUpdate as EventListener,
+      );
+    };
+  }, []);
+
   const updateStats = async (
     newBalance: number,
     newTotalWon = 0,

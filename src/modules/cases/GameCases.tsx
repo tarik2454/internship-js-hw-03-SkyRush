@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { getCurrentUser, updateUser } from "../../config/authApi";
+import { toast } from "react-toastify";
 import { OpenAnimal } from "../../shared/icons/open-animal";
 import styles from "./GameCases.module.scss";
 import {
@@ -10,9 +11,43 @@ import {
 } from "./data/icon-contents";
 
 export const GameCases = () => {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [lastResult, setLastResult] = useState<{
+    index: number;
+    offset: number;
+  } | null>(null);
+  const [balance, setBalance] = useState(100);
   const [selectedCase, setSelectedCase] = useState<
     "animal" | "space" | "food" | "sports"
   >("animal");
+
+  const gameAreaRef = useRef<HTMLDivElement>(null);
+
+  // Загружаем баланс при монтировании компонента
+  useEffect(() => {
+    getCurrentUser()
+      .then((user) => setBalance(user.balance ?? 100))
+      .catch((err) => console.error("Failed to fetch user balance:", err));
+  }, []);
+
+  // Обновляем локальный баланс при получении события
+  useEffect(() => {
+    const handleBalanceUpdate = (event: CustomEvent) => {
+      setBalance(event.detail.balance);
+    };
+
+    window.addEventListener(
+      "balanceUpdate",
+      handleBalanceUpdate as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "balanceUpdate",
+        handleBalanceUpdate as EventListener,
+      );
+    };
+  }, []);
 
   const updateBalance = async (amount: number) => {
     try {
@@ -78,12 +113,6 @@ export const GameCases = () => {
     const value = price * (1 + multiplier);
     return Math.ceil(value);
   };
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [lastResult, setLastResult] = useState<{
-    index: number;
-    offset: number;
-  } | null>(null);
-  const gameAreaRef = useRef<HTMLDivElement>(null);
 
   const getCurrentContents = () => {
     switch (selectedCase) {
@@ -120,8 +149,13 @@ export const GameCases = () => {
   const handleStartAnimation = () => {
     if (isAnimating) return;
 
-    // Сначала вычитаем стоимость кейса
+    // Проверяем достаточность баланса
     const casePrice = CASE_PRICES[selectedCase];
+    if (balance < casePrice) {
+      return toast.warning("Insufficient balance!");
+    }
+
+    // Сначала вычитаем стоимость кейса
     updateBalance(-casePrice);
 
     // Система вероятностей для выбора карточки
