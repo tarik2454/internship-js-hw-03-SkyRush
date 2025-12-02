@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useGame } from "../../providers/GameProvider";
+import { getCurrentUser, updateUser } from "../../config/authApi";
 import { OpenAnimal } from "../../shared/icons/open-animal";
 import styles from "./GameCases.module.scss";
 import {
@@ -10,10 +10,33 @@ import {
 } from "./data/icon-contents";
 
 export const GameCases = () => {
-  const { updateBalance } = useGame();
   const [selectedCase, setSelectedCase] = useState<
     "animal" | "space" | "food" | "sports"
   >("animal");
+
+  const updateBalance = async (amount: number) => {
+    try {
+      const user = await getCurrentUser();
+      const newBalance = user.balance + amount;
+      // Обновляем баланс через API
+      await updateUser({
+        username: user.username,
+        balance: newBalance,
+        totalWagered: user.totalWagered,
+        gamesPlayed: user.gamesPlayed,
+        totalWon: user.totalWon,
+      });
+
+      // Отправляем событие обновления баланса
+      window.dispatchEvent(
+        new CustomEvent("balanceUpdate", {
+          detail: { balance: newBalance },
+        }),
+      );
+    } catch (error) {
+      console.error("Failed to update balance:", error);
+    }
+  };
 
   const CASE_PRICES = {
     animal: 50,
@@ -97,6 +120,10 @@ export const GameCases = () => {
   const handleStartAnimation = () => {
     if (isAnimating) return;
 
+    // Сначала вычитаем стоимость кейса
+    const casePrice = CASE_PRICES[selectedCase];
+    updateBalance(-casePrice);
+
     // Система вероятностей для выбора карточки
     const rarityProbabilities = [
       { rarity: "common", chance: 55, indices: [0, 1, 2, 3, 4] }, // 55%
@@ -166,10 +193,16 @@ export const GameCases = () => {
         const rarity = getItemClassName(targetIndex);
         const itemValue = calculateItemValue(selectedCase, rarity);
         const casePrice = CASE_PRICES[selectedCase];
-        const profit = itemValue - casePrice;
 
-        // Update global balance via GameProvider
-        updateBalance(profit);
+        // Добавляем стоимость предмета (цена кейса уже вычтена в начале)
+        updateBalance(itemValue);
+
+        const profit = itemValue - casePrice;
+        console.log(
+          `Game Finished! Case: ${selectedCase} ($${casePrice}), Item Value: $${itemValue}, Result: ${
+            profit >= 0 ? "+" : ""
+          }${profit}`,
+        );
       }, 1500);
     }
   };

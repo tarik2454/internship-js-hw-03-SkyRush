@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { LeaderBoard } from "../shared/icons/leaserboard";
 import { getAllUsers, getCurrentUser, type User } from "../config/authApi";
-import { useGame } from "../providers/GameProvider";
 import styles from "./Leaderboard.module.scss";
 import { toast } from "react-toastify";
 import { Place1 } from "../shared/icons/place1";
@@ -20,26 +19,34 @@ export const Leaderboard = () => {
     const cached = localStorage.getItem("leaderboard_users");
     return cached ? JSON.parse(cached) : [];
   });
-  const { balance, gamesPlayed, totalWon, totalWagered } = useGame();
+  const [balance, setBalance] = useState(100);
+  const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [totalWon, setTotalWon] = useState(0);
+  const [totalWagered, setTotalWagered] = useState(0);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const currentUser = await getCurrentUser();
+        setBalance(currentUser.balance ?? 100);
+        setGamesPlayed(currentUser.gamesPlayed ?? 0);
+        setTotalWon(currentUser.totalWon ?? 0);
+        setTotalWagered(currentUser.totalWagered ?? 0);
+
         const users = await getAllUsers();
 
         setApiUsers(users);
         localStorage.setItem("leaderboard_users", JSON.stringify(users));
 
         const matchedUser = users.find(
-          (u) => u.username === currentUser.username
+          (u) => u.username === currentUser.username,
         );
         if (matchedUser) setCurrentUserId(matchedUser._id);
       } catch (err: unknown) {
         console.error("Failed to fetch users:", err);
         if (err instanceof AxiosError) {
           toast.error(
-            err.response?.data?.message || "Failed to load leaderboard data"
+            err.response?.data?.message || "Failed to load leaderboard data",
           );
         } else {
           toast.error("Failed to load leaderboard data");
@@ -50,6 +57,38 @@ export const Leaderboard = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    // Слушаем событие обновления баланса
+    const handleBalanceUpdate = (event: CustomEvent) => {
+      setBalance(event.detail.balance);
+    };
+
+    // Слушаем событие обновления статистики
+    const handleStatsUpdate = (event: CustomEvent) => {
+      setGamesPlayed(event.detail.gamesPlayed);
+      setTotalWon(event.detail.totalWon);
+      setTotalWagered(event.detail.totalWagered);
+    };
+
+    window.addEventListener(
+      "balanceUpdate",
+      handleBalanceUpdate as EventListener,
+    );
+
+    window.addEventListener("statsUpdate", handleStatsUpdate as EventListener);
+
+    return () => {
+      window.removeEventListener(
+        "balanceUpdate",
+        handleBalanceUpdate as EventListener,
+      );
+      window.removeEventListener(
+        "statsUpdate",
+        handleStatsUpdate as EventListener,
+      );
+    };
+  }, []);
+
   const leaders: LeaderboardUser[] = useMemo(() => {
     return apiUsers
       .map((user) => {
@@ -57,10 +96,10 @@ export const Leaderboard = () => {
 
         const userBalance = isCurrent ? balance : user.balance;
         const userGames = isCurrent ? gamesPlayed : user.gamesPlayed;
-        const userTotalWon = isCurrent ? totalWon : user.totalWon ?? 0;
+        const userTotalWon = isCurrent ? totalWon : (user.totalWon ?? 0);
         const userTotalWagered = isCurrent
           ? totalWagered
-          : user.totalWagered ?? 0;
+          : (user.totalWagered ?? 0);
 
         const winRate =
           userTotalWagered > 0

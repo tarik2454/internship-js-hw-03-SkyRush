@@ -6,13 +6,14 @@ import { User } from "../shared/icons/user";
 import { toast } from "react-toastify";
 import { getCurrentUser, updateUser } from "../config/authApi";
 import { AxiosError } from "axios";
-import { useGame } from "../providers/GameProvider";
 import { updateUserSchema, type UpdateUserFormData } from "../lib/validation";
 
 export const Profile = () => {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const { balance, totalWagered, gamesPlayed, totalWon, resetAccount } =
-    useGame();
+  const [balance, setBalance] = useState(100);
+  const [totalWagered, setTotalWagered] = useState(0);
+  const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [totalWon, setTotalWon] = useState(0);
 
   const {
     register,
@@ -32,6 +33,10 @@ export const Profile = () => {
       try {
         const userData = await getCurrentUser();
         setValue("username", userData.username);
+        setBalance(userData.balance ?? 100);
+        setTotalWagered(userData.totalWagered ?? 0);
+        setGamesPlayed(userData.gamesPlayed ?? 0);
+        setTotalWon(userData.totalWon ?? 0);
       } catch (err: unknown) {
         if (err instanceof AxiosError) {
           toast.error(
@@ -47,6 +52,14 @@ export const Profile = () => {
 
     loadUserData();
   }, [setValue]);
+
+  const resetAccount = () => {
+    setBalance(100);
+    setTotalWagered(0);
+    setGamesPlayed(0);
+    setTotalWon(0);
+    localStorage.removeItem("sky_rush_game_data");
+  };
 
   const onSubmit = async (data: UpdateUserFormData) => {
     try {

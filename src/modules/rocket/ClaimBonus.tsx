@@ -1,11 +1,52 @@
 import { Bonus } from "../../shared/icons/bonus";
 import styles from "./ClaimBonus.module.scss";
 import { Timer } from "../../shared/icons/timer";
-import { useGame } from "../../providers/GameProvider";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { getCurrentUser, updateUser } from "../../config/authApi";
 
 export const ClaimBonus = () => {
-  const { claimBonus, lastBonusClaimTime } = useGame();
+  const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
+    null,
+  );
+
+  const claimBonus = async () => {
+    const now = Date.now();
+    const COOLDOWN = 60 * 1000;
+    if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN) {
+      const remaining = Math.ceil(
+        (COOLDOWN - (now - lastBonusClaimTime)) / 1000,
+      );
+      return toast.warning(
+        `Please wait ${remaining} seconds before claiming again!`,
+      );
+    }
+
+    try {
+      const user = await getCurrentUser();
+      const newBalance = user.balance + 10;
+      await updateUser({
+        username: user.username,
+        balance: newBalance,
+        totalWagered: user.totalWagered,
+        gamesPlayed: user.gamesPlayed,
+        totalWon: user.totalWon,
+      });
+      setLastBonusClaimTime(now);
+
+      // Отправляем событие обновления баланса
+      window.dispatchEvent(
+        new CustomEvent("balanceUpdate", {
+          detail: { balance: newBalance },
+        }),
+      );
+
+      toast.success("Bonus claimed!");
+    } catch (error) {
+      console.error("Failed to claim bonus:", error);
+      toast.error("Failed to claim bonus");
+    }
+  };
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   useEffect(() => {

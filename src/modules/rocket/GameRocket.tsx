@@ -1,16 +1,107 @@
-import { useGame } from "../../providers/GameProvider";
+import { useState, useRef, useEffect } from "react";
+import { getCurrentUser, updateUser } from "../../config/authApi";
+import { toast } from "react-toastify";
 import styles from "./GameRocket.module.scss";
 
+type GameState = "IDLE" | "BETTING" | "FLYING" | "CRASHED" | "CASHOUT";
+
 export const GameRocket = () => {
-  const {
-    multiplier,
-    cashOut,
-    lastWin,
-    betAmount,
-    setBetAmount,
-    startGame,
-    gameState,
-  } = useGame();
+  const [balance, setBalance] = useState(100);
+  const [betAmount, setBetAmount] = useState(10);
+  const [multiplier, setMultiplier] = useState(1);
+  const [gameState, setGameState] = useState<GameState>("IDLE");
+  const [lastWin, setLastWin] = useState(0);
+
+  const requestRef = useRef<number>(0);
+  const startTimeRef = useRef<number>(0);
+
+  useEffect(() => {
+    getCurrentUser()
+      .then((user) => setBalance(user.balance ?? 100))
+      .catch((err) => console.error("Failed to fetch user data:", err));
+  }, []);
+
+  const updateStats = async (
+    newBalance: number,
+    newTotalWon = 0,
+    extraWagered = 0,
+    extraGames = 0,
+  ) => {
+    setBalance(newBalance);
+    try {
+      const user = await getCurrentUser();
+      await updateUser({
+        username: user.username,
+        balance: newBalance,
+        totalWagered: user.totalWagered + extraWagered,
+        gamesPlayed: user.gamesPlayed + extraGames,
+        totalWon: user.totalWon + newTotalWon,
+      });
+
+      // Отправляем событие обновления баланса
+      window.dispatchEvent(
+        new CustomEvent("balanceUpdate", {
+          detail: { balance: newBalance },
+        }),
+      );
+
+      // Отправляем событие обновления статистики
+      window.dispatchEvent(
+        new CustomEvent("statsUpdate", {
+          detail: {
+            gamesPlayed: user.gamesPlayed + extraGames,
+            totalWon: user.totalWon + newTotalWon,
+            totalWagered: user.totalWagered + extraWagered,
+          },
+        }),
+      );
+    } catch (error) {
+      console.error("Failed to update stats:", error);
+    }
+  };
+
+  const startGame = () => {
+    if (balance < betAmount) return toast.warning("Insufficient balance!");
+
+    const crashPoint = 1 + Math.pow(Math.random(), 2) * 9;
+    updateStats(balance - betAmount, 0, betAmount, 1);
+
+    setGameState("FLYING");
+    setMultiplier(1);
+    setLastWin(0);
+    startTimeRef.current = Date.now();
+
+    const animate = () => {
+      const elapsed = (Date.now() - startTimeRef.current) / 1000;
+      const currentMultiplier = 1 + Math.pow(elapsed, 2) * 0.1;
+
+      if (currentMultiplier >= crashPoint) {
+        setGameState("CRASHED");
+        setMultiplier(crashPoint);
+        return;
+      }
+
+      setMultiplier(currentMultiplier);
+      requestRef.current = requestAnimationFrame(animate);
+    };
+
+    requestRef.current = requestAnimationFrame(animate);
+  };
+
+  const handleCashOut = (finalMultiplier: number) => {
+    cancelAnimationFrame(requestRef.current);
+    const winAmount = betAmount * finalMultiplier;
+    updateStats(balance + winAmount, winAmount);
+    setLastWin(winAmount);
+    setMultiplier(finalMultiplier);
+    setGameState("CASHOUT");
+  };
+
+  const cashOut = () => {
+    if (gameState === "FLYING") handleCashOut(multiplier);
+  };
+
+  useEffect(() => () => cancelAnimationFrame(requestRef.current), []);
 
   const isGameActive = gameState === "FLYING";
 
