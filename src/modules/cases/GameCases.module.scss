@@ -35,6 +35,7 @@
   );
 
   &::before {
+    z-index: 1;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -63,7 +64,12 @@
   left: 50%;
   gap: 16px;
   transform: translate(-50%, -50%);
+
+  &.transitionActive {
+    transition: transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
 }
+/* Удалена keyframe анимация scrollAnimation, так как теперь используется transition */
 
 .contentItemGameArea {
   @include rarity-styles;
@@ -83,7 +89,8 @@
 }
 
 .betBtn {
-  display: block;
+  width: 100%;
+  margin-bottom: 24px;
   padding: 18px;
   border: 1px solid rgba(49, 65, 88, 1);
   border-radius: 10px;
@@ -103,6 +110,10 @@
       rgba(21.32, 92.93, 251.52, 0.2),
       rgba(152.19, 15.74, 250.25, 0.2) 100%
     );
+  }
+
+  span {
+    display: block;
   }
 }
 
@@ -138,6 +149,17 @@
     rgba(0, 166.08, 61.71, 1),
     rgba(0, 152.73, 101.74, 1) 100%
   );
+  transition: $transition-base;
+
+  &:disabled {
+    background: linear-gradient(90deg, #45556c 0%, #314158 100%);
+    cursor: not-allowed;
+    opacity: 0.8;
+
+    &:hover {
+      background: linear-gradient(90deg, #45556c 0%, #314158 100%);
+    }
+  }
 }
 
 .contentInner {
@@ -154,13 +176,12 @@
 }
 
 .contentItem {
+  @include rarity-styles;
   width: 67px;
   padding: 9px;
   border: 1px solid rgba(69, 85, 108, 0.5);
   border-radius: 4px;
   text-align: center;
-
-  @include rarity-styles;
 }
 
 .contentIcon {

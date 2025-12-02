@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { OpenAnimal } from "../../shared/icons/open-animal";
 import styles from "./GameCases.module.scss";
 import {
@@ -12,6 +12,12 @@ export const GameCases = () => {
   const [selectedCase, setSelectedCase] = useState<
     "animal" | "space" | "food" | "sports"
   >("animal");
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [lastResult, setLastResult] = useState<{
+    index: number;
+    offset: number;
+  } | null>(null);
+  const gameAreaRef = useRef<HTMLDivElement>(null);
 
   const getCurrentContents = () => {
     switch (selectedCase) {
@@ -43,6 +49,85 @@ export const GameCases = () => {
     return `${styles.betBtn} ${styles[`${caseType}Case`]} ${
       selectedCase === caseType ? styles.active : ""
     }`;
+  };
+
+  const handleStartAnimation = () => {
+    if (isAnimating) return;
+
+    // Система вероятностей для выбора карточки
+    const rarityProbabilities = [
+      { rarity: "common", chance: 55, indices: [0, 1, 2, 3, 4] }, // 55%
+      { rarity: "uncommon", chance: 25, indices: [5, 6, 7] }, // 25%
+      { rarity: "rare", chance: 12, indices: [8, 9] }, // 12%
+      { rarity: "epic", chance: 5, indices: [10, 11] }, // 5%
+      { rarity: "legendary", chance: 2.5, indices: [12] }, // 2.5%
+      { rarity: "gold", chance: 0.5, indices: [13] }, // 0.5%
+    ];
+
+    // Выбираем карточку на основе вероятностей
+    const selectCardByProbability = () => {
+      const random = Math.random() * 100; // 0-100
+      let cumulative = 0;
+
+      for (const { indices, chance } of rarityProbabilities) {
+        cumulative += chance;
+        if (random <= cumulative) {
+          // Выбираем случайный индекс из доступных для этой редкости
+          return indices[Math.floor(Math.random() * indices.length)];
+        }
+      }
+      return 0; // Fallback на common
+    };
+
+    const targetIndex = selectCardByProbability();
+    // Случайное смещение ±50px для естественности
+    const randomOffset = Math.random() * 100 - 50;
+
+    if (gameAreaRef.current) {
+      const area = gameAreaRef.current;
+
+      // Логика сброса позиции (бесшовный переход)
+      if (lastResult) {
+        // Если была предыдущая прокрутка, мы сейчас визуально на Set 8.
+        // Мгновенно перепрыгиваем на Set 5 (безопасная середина), который выглядит так же.
+        // Формула сдвига: (70 - (set * 14 + index)) * 146 - 73 + offset
+        const resetShift =
+          (70 - (5 * 14 + lastResult.index)) * 146 - 73 + lastResult.offset;
+
+        // Отключаем transition для мгновенного прыжка
+        area.classList.remove(styles.transitionActive);
+        area.style.transform = `translate(calc(-50% + ${resetShift}px), -50%)`;
+
+        // Форсируем reflow, чтобы браузер применил изменения до включения анимации
+        void area.offsetWidth;
+      }
+
+      // Логика анимации к новой цели
+      // Крутим до Set 8 (достаточно далеко для эффекта вращения)
+      const targetSet = 8;
+      const endShift =
+        (70 - (targetSet * 14 + targetIndex)) * 146 - 73 + randomOffset;
+
+      console.log(
+        "Target:",
+        targetIndex,
+        getItemClassName(targetIndex),
+        "Shift:",
+        endShift.toFixed(2),
+      );
+
+      // Включаем transition и применяем новую позицию
+      area.classList.add(styles.transitionActive);
+      area.style.transform = `translate(calc(-50% + ${endShift}px), -50%)`;
+
+      setIsAnimating(true);
+      setLastResult({ index: targetIndex, offset: randomOffset });
+
+      setTimeout(() => {
+        setIsAnimating(false);
+        // Позиция остается зафиксированной благодаря style.transform
+      }, 1500);
+    }
   };
 
   return (
@@ -85,26 +170,39 @@ export const GameCases = () => {
       </div>
 
       <div className={styles.gameArea}>
-        <div className={styles.contentGameArea}>
-          {getCurrentContents().map((item, index) => (
-            <div
-              className={`${styles.contentItemGameArea} ${styles[getItemClassName(index)]}`}
-              key={item.id}
-            >
-              <div className={styles.contentIconGameArea}>{item.emoji}</div>
-            </div>
-          ))}
+        <div className={styles.contentGameArea} ref={gameAreaRef}>
+          {/* Дублируем карточки несколько раз для эффекта бесконечной прокрутки */}
+          {Array.from({ length: 10 }).flatMap((_, repeatIndex) =>
+            getCurrentContents().map((item, index) => (
+              <div
+                className={`${styles.contentItemGameArea} ${styles[getItemClassName(index)]}`}
+                key={`${item.id}-${repeatIndex}`}
+              >
+                <div className={styles.contentIconGameArea}>{item.emoji}</div>
+              </div>
+            )),
+          )}
         </div>
       </div>
 
-      <button className={styles.startBtn}>
+      <button
+        className={styles.startBtn}
+        onClick={handleStartAnimation}
+        disabled={isAnimating}
+      >
         <span>
           <OpenAnimal />
         </span>
-        {selectedCase === "animal" && "Open Animal Case - $50"}
-        {selectedCase === "space" && "Open Space Case - $75"}
-        {selectedCase === "food" && "Open Food Case - 40"}
-        {selectedCase === "sports" && "Open Sports Case - $60"}
+        {isAnimating ? (
+          "Opening..."
+        ) : (
+          <>
+            {selectedCase === "animal" && "Open Animal Case - $50"}
+            {selectedCase === "space" && "Open Space Case - $75"}
+            {selectedCase === "food" && "Open Food Case - 40"}
+            {selectedCase === "sports" && "Open Sports Case - $60"}
+          </>
+        )}
       </button>
 
       <div className={styles.contentWrapper}>
