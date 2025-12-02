@@ -28,6 +28,7 @@ interface GameContextType {
   gamesPlayed: number;
   totalWon: number;
   resetAccount: () => void;
+  updateBalance: (amount: number) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -40,7 +41,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [autoCashOut, setAutoCashOut] = useState(2);
   const [lastWin, setLastWin] = useState(0);
   const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
-    null
+    null,
   );
   const [totalWagered, setTotalWagered] = useState(0);
   const [gamesPlayed, setGamesPlayed] = useState(0);
@@ -71,7 +72,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         gamesPlayed,
         totalWon,
         lastBonusClaimTime,
-      })
+      }),
     );
   };
 
@@ -79,7 +80,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     newBalance: number,
     newTotalWon = totalWon,
     extraWagered = 0,
-    extraGames = 0
+    extraGames = 0,
   ) => {
     setBalance(newBalance);
     setTotalWon(newTotalWon);
@@ -139,10 +140,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const COOLDOWN = 60 * 1000;
     if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN) {
       const remaining = Math.ceil(
-        (COOLDOWN - (now - lastBonusClaimTime)) / 1000
+        (COOLDOWN - (now - lastBonusClaimTime)) / 1000,
       );
       return toast.warning(
-        `Please wait ${remaining} seconds before claiming again!`
+        `Please wait ${remaining} seconds before claiming again!`,
       );
     }
     setBalance((prev) => prev + 10);
@@ -183,6 +184,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         gamesPlayed,
         totalWon,
         resetAccount,
+        updateBalance: (amount: number) => updateStats(balance + amount),
       }}
     >
       {children}

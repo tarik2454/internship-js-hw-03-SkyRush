@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useGame } from "../../providers/GameProvider";
 import { OpenAnimal } from "../../shared/icons/open-animal";
 import styles from "./GameCases.module.scss";
 import {
@@ -9,6 +10,7 @@ import {
 } from "./data/icon-contents";
 
 export const GameCases = () => {
+  const { updateBalance } = useGame();
   const [selectedCase, setSelectedCase] = useState<
     "animal" | "space" | "food" | "sports"
   >("animal");
@@ -149,14 +151,6 @@ export const GameCases = () => {
       const endShift =
         (70 - (targetSet * 14 + targetIndex)) * 146 - 73 + randomOffset;
 
-      console.log(
-        "Target:",
-        targetIndex,
-        getItemClassName(targetIndex),
-        "Shift:",
-        endShift.toFixed(2),
-      );
-
       // Включаем transition и применяем новую позицию
       area.classList.add(styles.transitionActive);
       area.style.transform = `translate(calc(-50% + ${endShift}px), -50%)`;
@@ -174,11 +168,8 @@ export const GameCases = () => {
         const casePrice = CASE_PRICES[selectedCase];
         const profit = itemValue - casePrice;
 
-        console.log(
-          `Game Finished! Case: ${selectedCase} ($${casePrice}), Item Value: $${itemValue}, Result: ${
-            profit >= 0 ? "+" : ""
-          }${profit}`,
-        );
+        // Update global balance via GameProvider
+        updateBalance(profit);
       }, 1500);
     }
   };

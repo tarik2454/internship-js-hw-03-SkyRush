@@ -72,7 +72,7 @@ export const Header = () => {
       </header>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <Profile />
+        {isModalOpen && <Profile />}
       </Modal>
     </>
   );
