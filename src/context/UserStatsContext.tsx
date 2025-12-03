@@ -1,27 +1,6 @@
-import React, { createContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getCurrentUser } from "../config/authApi";
-
-interface UserStats {
-  username: string;
-  balance: number;
-  totalWagered: number;
-  gamesPlayed: number;
-  totalWon: number;
-}
-
-interface UserStatsContextType extends Omit<UserStats, "username"> {
-  username: string;
-  isLoading: boolean;
-  updateBalance: (
-    amount: number,
-    extraStats?: Partial<Omit<UserStats, "balance" | "username">>,
-  ) => Promise<void>;
-  refreshStats: () => Promise<void>;
-}
-
-export const UserStatsContext = createContext<UserStatsContextType | undefined>(
-  undefined,
-);
+import { type UserStats, UserStatsContext } from "./UserStatsContextDefinition";
 
 export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -51,8 +30,6 @@ export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchUserData = async (forceRefresh = false) => {
     try {
       const user = await getCurrentUser();
-
-      console.log("Fetched user data from API:", user);
 
       setStats(() => {
         const saved = localStorage.getItem("sky_rush_game_data");
