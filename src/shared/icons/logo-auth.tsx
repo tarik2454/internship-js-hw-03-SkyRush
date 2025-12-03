@@ -16,16 +16,16 @@ export function LogoAuth() {
           y2="64"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#00bc7c" />
-          <stop offset=".5" stop-color="#2b7fff" />
-          <stop offset="1" stop-color="#980ffa" />
+          <stop offset="0" stopColor="#00bc7c" />
+          <stop offset=".5" stopColor="#2b7fff" />
+          <stop offset="1" stopColor="#980ffa" />
         </linearGradient>
         <clipPath id="b">
           <path fill="#fff" d="M12 12h40v40H12z" />
         </clipPath>
       </defs>
       <rect width="64" height="64" fill="url(#a)" rx="10" />
-      <g clip-path="url(#b)">
+      <g clipPath="url(#b)">
         <path d="M12 12h40v40H12z" />
         <path
           stroke="#fff"

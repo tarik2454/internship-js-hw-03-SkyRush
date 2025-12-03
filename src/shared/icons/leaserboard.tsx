@@ -34,8 +34,8 @@ export function LeaderBoard() {
           y2="40"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#2b7fff" stop-opacity=".2" />
-          <stop offset="1" stop-color="#ad46ff" stop-opacity=".2" />
+          <stop stopColor="#2b7fff" stopOpacity=".2" />
+          <stop offset="1" stopColor="#ad46ff" stopOpacity=".2" />
         </linearGradient>
       </defs>
     </svg>

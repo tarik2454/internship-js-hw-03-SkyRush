@@ -16,16 +16,16 @@ export function Logo() {
           y2="40"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#00bc7c" />
-          <stop offset=".5" stop-color="#2b7fff" />
-          <stop offset="1" stop-color="#980ffa" />
+          <stop offset="0" stopColor="#00bc7c" />
+          <stop offset=".5" stopColor="#2b7fff" />
+          <stop offset="1" stopColor="#980ffa" />
         </linearGradient>
         <clipPath id="b">
           <path fill="#fff" d="M8 8h24v24H8z" />
         </clipPath>
       </defs>
       <rect width="40" height="40" fill="url(#a)" rx="10" />
-      <g clip-path="url(#b)">
+      <g clipPath="url(#b)">
         <path d="M8 8h24v24H8z" />
         <path
           stroke="#fff"
