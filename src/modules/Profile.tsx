@@ -43,7 +43,7 @@ export const Profile = () => {
     try {
       await updateUser({
         username,
-        balance: 100,
+        balance: 0,
         totalWagered: 0,
         gamesPlayed: 0,
         totalWon: 0,
