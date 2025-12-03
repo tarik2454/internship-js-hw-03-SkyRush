@@ -48,27 +48,31 @@ export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem("sky_rush_game_data", JSON.stringify(stats));
   }, [stats]);
 
-  const fetchUserData = async () => {
+  const fetchUserData = async (forceRefresh = false) => {
     try {
       const user = await getCurrentUser();
 
+      console.log("Fetched user data from API:", user);
+
       setStats(() => {
         const saved = localStorage.getItem("sky_rush_game_data");
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          return {
-            ...parsed,
-            username: user.username,
-          };
+        const hasSavedData =
+          saved && JSON.parse(saved).username === user.username;
+
+        if (hasSavedData && !forceRefresh) {
+          return JSON.parse(saved);
         }
 
-        return {
+        const userData = {
           username: user.username,
           balance: user.balance ?? 100,
           totalWagered: user.totalWagered ?? 0,
           gamesPlayed: user.gamesPlayed ?? 0,
           totalWon: user.totalWon ?? 0,
         };
+
+        localStorage.setItem("sky_rush_game_data", JSON.stringify(userData));
+        return userData;
       });
     } catch (error) {
       console.error("Failed to fetch user data:", error);
@@ -104,7 +108,7 @@ export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
         ...stats,
         isLoading,
         updateBalance,
-        refreshStats: fetchUserData,
+        refreshStats: () => fetchUserData(true),
       }}
     >
       {children}

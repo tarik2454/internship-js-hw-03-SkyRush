@@ -40,7 +40,7 @@ export const loginUser = async (data: LoginFormData) => {
 };
 
 export const getCurrentUser = async () =>
-  (await API.get("/users/current")).data;
+  (await API.get(`/users/current?t=${Date.now()}`)).data;
 
 export const logoutUser = async () => {
   const response = await API.post("/users/logout");
@@ -53,4 +53,4 @@ export const updateUser = async (data: UpdateUserFormData) =>
   (await API.patch("/users/update", data)).data;
 
 export const getAllUsers = async (): Promise<User[]> =>
-  (await API.get("/users/users")).data;
+  (await API.get(`/users/users?t=${Date.now()}`)).data;
