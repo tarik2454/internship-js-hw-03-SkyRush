@@ -39,10 +39,10 @@ export const GameCases = () => {
 
     switch (rarity) {
       case "common":
-        multiplier = -0.6;
+        multiplier = -0.4;
         break;
       case "uncommon":
-        multiplier = -0.2;
+        multiplier = 0;
         break;
       case "rare":
         multiplier = 0.2;
