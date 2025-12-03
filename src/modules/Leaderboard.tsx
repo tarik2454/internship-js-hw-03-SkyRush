@@ -58,12 +58,10 @@ export const Leaderboard = () => {
   }, []);
 
   useEffect(() => {
-    // Слушаем событие обновления баланса
     const handleBalanceUpdate = (event: CustomEvent) => {
       setBalance(event.detail.balance);
     };
 
-    // Слушаем событие обновления статистики
     const handleStatsUpdate = (event: CustomEvent) => {
       setGamesPlayed(event.detail.gamesPlayed);
       setTotalWon(event.detail.totalWon);

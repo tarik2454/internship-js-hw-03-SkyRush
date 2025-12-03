@@ -34,7 +34,6 @@ export const ClaimBonus = () => {
       });
       setLastBonusClaimTime(now);
 
-      // Отправляем событие обновления баланса
       window.dispatchEvent(
         new CustomEvent("balanceUpdate", {
           detail: { balance: newBalance },
