@@ -47,7 +47,7 @@ export const Leaderboard = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [currentUsername]);
 
   const leaders: LeaderboardUser[] = useMemo(() => {
     return apiUsers
