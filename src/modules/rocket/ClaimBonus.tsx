@@ -3,9 +3,10 @@ import styles from "./ClaimBonus.module.scss";
 import { Timer } from "../../shared/icons/timer";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { getCurrentUser, updateUser } from "../../config/authApi";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const ClaimBonus = () => {
+  const { updateBalance } = useUserStats();
   const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
     null,
   );
@@ -23,23 +24,8 @@ export const ClaimBonus = () => {
     }
 
     try {
-      const user = await getCurrentUser();
-      const newBalance = user.balance + 10;
-      await updateUser({
-        username: user.username,
-        balance: newBalance,
-        totalWagered: user.totalWagered,
-        gamesPlayed: user.gamesPlayed,
-        totalWon: user.totalWon,
-      });
+      await updateBalance(10);
       setLastBonusClaimTime(now);
-
-      window.dispatchEvent(
-        new CustomEvent("balanceUpdate", {
-          detail: { balance: newBalance },
-        }),
-      );
-
       toast.success("Bonus claimed!");
     } catch (error) {
       console.error("Failed to claim bonus:", error);

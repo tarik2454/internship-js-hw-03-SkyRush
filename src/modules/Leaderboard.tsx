@@ -1,12 +1,13 @@
 import { useEffect, useState, useMemo } from "react";
 import { LeaderBoard } from "../shared/icons/leaserboard";
-import { getAllUsers, getCurrentUser, type User } from "../config/authApi";
+import { getAllUsers, type User } from "../config/authApi";
 import styles from "./Leaderboard.module.scss";
 import { toast } from "react-toastify";
 import { Place1 } from "../shared/icons/place1";
 import { Place2 } from "../shared/icons/place2";
 import { Place3 } from "../shared/icons/place3";
 import { AxiosError } from "axios";
+import { useUserStats } from "../hooks/useUserStats";
 
 interface LeaderboardUser extends User {
   rank: number;
@@ -14,34 +15,25 @@ interface LeaderboardUser extends User {
 }
 
 export const Leaderboard = () => {
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const {
+    balance,
+    gamesPlayed,
+    totalWon,
+    totalWagered,
+    username: currentUsername,
+  } = useUserStats();
   const [apiUsers, setApiUsers] = useState<User[]>(() => {
     const cached = localStorage.getItem("leaderboard_users");
     return cached ? JSON.parse(cached) : [];
   });
-  const [balance, setBalance] = useState(100);
-  const [gamesPlayed, setGamesPlayed] = useState(0);
-  const [totalWon, setTotalWon] = useState(0);
-  const [totalWagered, setTotalWagered] = useState(0);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const currentUser = await getCurrentUser();
-        setBalance(currentUser.balance ?? 100);
-        setGamesPlayed(currentUser.gamesPlayed ?? 0);
-        setTotalWon(currentUser.totalWon ?? 0);
-        setTotalWagered(currentUser.totalWagered ?? 0);
-
         const users = await getAllUsers();
 
         setApiUsers(users);
         localStorage.setItem("leaderboard_users", JSON.stringify(users));
-
-        const matchedUser = users.find(
-          (u) => u.username === currentUser.username,
-        );
-        if (matchedUser) setCurrentUserId(matchedUser._id);
       } catch (err: unknown) {
         console.error("Failed to fetch users:", err);
         if (err instanceof AxiosError) {
@@ -57,40 +49,10 @@ export const Leaderboard = () => {
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    const handleBalanceUpdate = (event: CustomEvent) => {
-      setBalance(event.detail.balance);
-    };
-
-    const handleStatsUpdate = (event: CustomEvent) => {
-      setGamesPlayed(event.detail.gamesPlayed);
-      setTotalWon(event.detail.totalWon);
-      setTotalWagered(event.detail.totalWagered);
-    };
-
-    window.addEventListener(
-      "balanceUpdate",
-      handleBalanceUpdate as EventListener,
-    );
-
-    window.addEventListener("statsUpdate", handleStatsUpdate as EventListener);
-
-    return () => {
-      window.removeEventListener(
-        "balanceUpdate",
-        handleBalanceUpdate as EventListener,
-      );
-      window.removeEventListener(
-        "statsUpdate",
-        handleStatsUpdate as EventListener,
-      );
-    };
-  }, []);
-
   const leaders: LeaderboardUser[] = useMemo(() => {
     return apiUsers
       .map((user) => {
-        const isCurrent = user._id === currentUserId;
+        const isCurrent = user.username === currentUsername;
 
         const userBalance = isCurrent ? balance : user.balance;
         const userGames = isCurrent ? gamesPlayed : user.gamesPlayed;
@@ -115,7 +77,7 @@ export const Leaderboard = () => {
       .sort((a, b) => b.balance - a.balance)
       .slice(0, 8)
       .map((user, index) => ({ ...user, rank: index + 1 }));
-  }, [apiUsers, currentUserId, balance, gamesPlayed, totalWon, totalWagered]);
+  }, [apiUsers, currentUsername, balance, gamesPlayed, totalWon, totalWagered]);
 
   return (
     <section className={styles.leaderboardSection}>
@@ -132,7 +94,7 @@ export const Leaderboard = () => {
           <li
             key={player._id}
             className={`${player.rank <= 3 ? styles.topRank : ""} ${
-              player._id === currentUserId ? styles.currentUser : ""
+              player.username === currentUsername ? styles.currentUser : ""
             }`}
           >
             <div className={styles.rank}>
@@ -163,10 +125,11 @@ export const Leaderboard = () => {
         ))}
       </ul>
 
-      {currentUserId && (
+      {currentUsername && (
         <div className={styles.ownRank}>
           Your rank: #
-          {leaders.find((player) => player._id === currentUserId)?.rank || "?"}
+          {leaders.find((player) => player.username === currentUsername)
+            ?.rank || "?"}
         </div>
       )}
     </section>

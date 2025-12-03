@@ -12,6 +12,7 @@ import { RootLayout } from "./layouts/RootLayout";
 import { HomePage } from "./pages/HomePage";
 import { ProtectedRoute } from "./shared/ProtectedRoute";
 import { initAuthToken } from "./config/authApi";
+import { UserStatsProvider } from "./context/UserStatsContext";
 
 initAuthToken();
 
@@ -29,7 +30,9 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <RootLayout />
+              <UserStatsProvider>
+                <RootLayout />
+              </UserStatsProvider>
             </ProtectedRoute>
           }
         >

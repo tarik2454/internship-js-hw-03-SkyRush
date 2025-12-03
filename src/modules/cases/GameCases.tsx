@@ -39,22 +39,22 @@ export const GameCases = () => {
 
     switch (rarity) {
       case "common":
-        multiplier = -0.6; // -60% (Loss)
+        multiplier = -0.6;
         break;
       case "uncommon":
-        multiplier = -0.2; // -20% (Small Loss)
+        multiplier = -0.2;
         break;
       case "rare":
-        multiplier = 0.2; // +20% (Profit)
+        multiplier = 0.2;
         break;
       case "epic":
-        multiplier = 1.0; // +100% (x2)
+        multiplier = 1.0;
         break;
       case "legendary":
-        multiplier = 2.0; // +200% (x3)
+        multiplier = 2.0;
         break;
       case "gold":
-        multiplier = 5.0; // +500% (x6)
+        multiplier = 5.0;
         break;
       default:
         multiplier = 0;
@@ -99,73 +99,58 @@ export const GameCases = () => {
   const handleStartAnimation = () => {
     if (isAnimating) return;
 
-    // Проверяем достаточность баланса
     const casePrice = CASE_PRICES[selectedCase];
     if (balance < casePrice) {
       return toast.warning("Insufficient balance!");
     }
 
-    // Сначала вычитаем стоимость кейса
     updateBalance(-casePrice, {
       totalWagered: casePrice,
       gamesPlayed: 1,
     });
 
-    // Система вероятностей для выбора карточки
     const rarityProbabilities = [
-      { rarity: "common", chance: 55, indices: [0, 1, 2, 3, 4] }, // 55%
-      { rarity: "uncommon", chance: 25, indices: [5, 6, 7] }, // 25%
-      { rarity: "rare", chance: 12, indices: [8, 9] }, // 12%
-      { rarity: "epic", chance: 5, indices: [10, 11] }, // 5%
-      { rarity: "legendary", chance: 2.5, indices: [12] }, // 2.5%
-      { rarity: "gold", chance: 0.5, indices: [13] }, // 0.5%
+      { rarity: "common", chance: 55, indices: [0, 1, 2, 3, 4] },
+      { rarity: "uncommon", chance: 25, indices: [5, 6, 7] },
+      { rarity: "rare", chance: 12, indices: [8, 9] },
+      { rarity: "epic", chance: 5, indices: [10, 11] },
+      { rarity: "legendary", chance: 2.5, indices: [12] },
+      { rarity: "gold", chance: 0.5, indices: [13] },
     ];
 
-    // Выбираем карточку на основе вероятностей
     const selectCardByProbability = () => {
-      const random = Math.random() * 100; // 0-100
+      const random = Math.random() * 100;
       let cumulative = 0;
 
       for (const { indices, chance } of rarityProbabilities) {
         cumulative += chance;
         if (random <= cumulative) {
-          // Выбираем случайный индекс из доступных для этой редкости
           return indices[Math.floor(Math.random() * indices.length)];
         }
       }
-      return 0; // Fallback на common
+      return 0;
     };
 
     const targetIndex = selectCardByProbability();
-    // Случайное смещение ±50px для естественности
     const randomOffset = Math.random() * 100 - 50;
 
     if (gameAreaRef.current) {
       const area = gameAreaRef.current;
 
-      // Логика сброса позиции (бесшовный переход)
       if (lastResult) {
-        // Если была предыдущая прокрутка, мы сейчас визуально на Set 8.
-        // Мгновенно перепрыгиваем на Set 5 (безопасная середина), который выглядит так же.
-        // Формула сдвига: (70 - (set * 14 + index)) * 146 - 73 + offset
         const resetShift =
           (70 - (5 * 14 + lastResult.index)) * 146 - 73 + lastResult.offset;
 
-        // Отключаем transition для мгновенного прыжка
         area.classList.remove(styles.transitionActive);
         area.style.transform = `translate(calc(-50% + ${resetShift}px), -50%)`;
 
-        // Форсируем reflow, чтобы браузер применил изменения до включения анимации
         void area.offsetWidth;
       }
 
-      // Логика анимации к новой цели
-      // Крутим до Set 8 (достаточно далеко для эффекта вращения)
       const targetSet = 8;
       const endShift =
         (70 - (targetSet * 14 + targetIndex)) * 146 - 73 + randomOffset;
 
-      // Включаем transition и применяем новую позицию
       area.classList.add(styles.transitionActive);
       area.style.transform = `translate(calc(-50% + ${endShift}px), -50%)`;
 
@@ -174,14 +159,11 @@ export const GameCases = () => {
 
       setTimeout(() => {
         setIsAnimating(false);
-        // Позиция остается зафиксированной благодаря style.transform
 
-        // Calculate and log result
         const rarity = getItemClassName(targetIndex);
         const itemValue = calculateItemValue(selectedCase, rarity);
         const casePrice = CASE_PRICES[selectedCase];
 
-        // Добавляем стоимость предмета (цена кейса уже вычтена в начале)
         updateBalance(itemValue, {
           totalWon: itemValue,
         });
@@ -204,6 +186,7 @@ export const GameCases = () => {
         <button
           className={getCaseButtonClassName("animal")}
           onClick={() => setSelectedCase("animal")}
+          disabled={isAnimating}
         >
           <span className={styles.icon}>🦁</span>
           <p className={styles.title}>Animal Case</p>
@@ -212,6 +195,7 @@ export const GameCases = () => {
         <button
           className={getCaseButtonClassName("space")}
           onClick={() => setSelectedCase("space")}
+          disabled={isAnimating}
         >
           <span className={styles.icon}>🚀</span>
           <p className={styles.title}>Space Case</p>
@@ -220,6 +204,7 @@ export const GameCases = () => {
         <button
           className={getCaseButtonClassName("food")}
           onClick={() => setSelectedCase("food")}
+          disabled={isAnimating}
         >
           <span className={styles.icon}>🍕</span>
           <p className={styles.title}>Food Case</p>
@@ -228,6 +213,7 @@ export const GameCases = () => {
         <button
           className={getCaseButtonClassName("sports")}
           onClick={() => setSelectedCase("sports")}
+          disabled={isAnimating}
         >
           <span className={styles.icon}>⚽</span>
           <p className={styles.title}>Sports Case</p>
@@ -237,7 +223,6 @@ export const GameCases = () => {
 
       <div className={styles.gameArea}>
         <div className={styles.contentGameArea} ref={gameAreaRef}>
-          {/* Дублируем карточки несколько раз для эффекта бесконечной прокрутки */}
           {Array.from({ length: 10 }).flatMap((_, repeatIndex) =>
             getCurrentContents().map((item, index) => {
               const rarity = getItemClassName(index);

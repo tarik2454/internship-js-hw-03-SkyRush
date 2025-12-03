@@ -1,19 +1,24 @@
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./Profile.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "../shared/icons/user";
 import { toast } from "react-toastify";
-import { getCurrentUser, updateUser } from "../config/authApi";
+import { updateUser } from "../config/authApi";
 import { AxiosError } from "axios";
 import { updateUserSchema, type UpdateUserFormData } from "../lib/validation";
+import { useUserStats } from "../hooks/useUserStats";
 
 export const Profile = () => {
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const [balance, setBalance] = useState(100);
-  const [totalWagered, setTotalWagered] = useState(0);
-  const [gamesPlayed, setGamesPlayed] = useState(0);
-  const [totalWon, setTotalWon] = useState(0);
+  const {
+    balance,
+    totalWagered,
+    gamesPlayed,
+    totalWon,
+    username,
+    isLoading: isLoadingUser,
+    refreshStats,
+  } = useUserStats();
 
   const {
     register,
@@ -24,41 +29,32 @@ export const Profile = () => {
   } = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      username: "",
+      username: username || "",
     },
   });
 
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const userData = await getCurrentUser();
-        setValue("username", userData.username);
-        setBalance(userData.balance ?? 100);
-        setTotalWagered(userData.totalWagered ?? 0);
-        setGamesPlayed(userData.gamesPlayed ?? 0);
-        setTotalWon(userData.totalWon ?? 0);
-      } catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          toast.error(
-            err.response?.data?.message || "Failed to load user data",
-          );
-        } else {
-          toast.error("Failed to load user data");
-        }
-      } finally {
-        setIsLoadingUser(false);
-      }
-    };
+    if (username) {
+      setValue("username", username);
+    }
+  }, [username, setValue]);
 
-    loadUserData();
-  }, [setValue]);
-
-  const resetAccount = () => {
-    setBalance(100);
-    setTotalWagered(0);
-    setGamesPlayed(0);
-    setTotalWon(0);
-    localStorage.removeItem("sky_rush_game_data");
+  const resetAccount = async () => {
+    try {
+      await updateUser({
+        username,
+        balance: 100,
+        totalWagered: 0,
+        gamesPlayed: 0,
+        totalWon: 0,
+      });
+      await refreshStats();
+      localStorage.removeItem("sky_rush_game_data");
+      toast.success("Account reset successfully!");
+    } catch (error) {
+      console.error("Failed to reset account:", error);
+      toast.error("Failed to reset account");
+    }
   };
 
   const onSubmit = async (data: UpdateUserFormData) => {
@@ -70,6 +66,7 @@ export const Profile = () => {
         gamesPlayed,
         totalWon,
       });
+      await refreshStats();
       toast.success("Profile updated successfully!");
     } catch (err: unknown) {
       console.error(err);
