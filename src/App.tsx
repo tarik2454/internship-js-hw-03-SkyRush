@@ -16,7 +16,7 @@ import { UserStatsProvider } from "./context/UserStatsContext";
 
 initAuthToken();
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
@@ -42,5 +42,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;

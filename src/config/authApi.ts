@@ -9,6 +9,18 @@ export const API = axios.create({
   baseURL: "https://backend-internship-js-hw-03-sky-rus.vercel.app/api",
 });
 
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+      API.defaults.headers.common.Authorization = "";
+      window.location.href = "/auth/login";
+    }
+    return Promise.reject(error);
+  },
+);
+
 export const hasToken = () => localStorage.getItem("token") !== null;
 
 export const initAuthToken = () => {

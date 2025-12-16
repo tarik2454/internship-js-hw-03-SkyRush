@@ -1,5 +1,5 @@
 import { GameRocket } from "../modules/rocket/GameRocket";
-import { ClaimBonus } from "../modules/rocket/ClaimBonus";
+import { ClaimBonus } from "../modules/ClaimBonus";
 import styles from "./HomePage.module.scss";
 import Container from "../shared/Container";
 import PageWrapper from "../shared/PageWrapper";
