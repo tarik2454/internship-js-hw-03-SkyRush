@@ -1,24 +1,24 @@
-@use "../styles/variables" as *;
-@use "../styles/mixins" as *;
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .backdrop {
-  position: fixed;
-  z-index: 50;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgb(0 0 0 / 50%);
-  opacity: 0;
   visibility: hidden;
-  transition: all 250ms ease;
-  pointer-events: none;
-  overflow-y: auto;
+  z-index: 50;
+  position: fixed;
+  align-items: center;
+  justify-content: center;
 
   inset: 0;
+  overflow-y: auto;
+  background: rgb(0 0 0 / 50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 250ms ease;
 
   &.open {
-    opacity: 1;
     visibility: visible;
+    opacity: 1;
     pointer-events: auto;
   }
 }
@@ -28,30 +28,30 @@
   max-width: 512px;
   margin: auto 0;
   padding: 25px;
-  background: rgb(15 23 43 / 100%);
+  transform: scaleY(0);
   border: 1px solid rgb(49 65 88 / 100%);
   border-radius: 10px;
+  background: rgb(15 23 43 / 100%);
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 10%),
     0 4px 6px -4px rgb(0 0 0 / 10%);
   opacity: 0;
   transition: all 250ms ease;
-  transform: scaleY(0);
 
   &.open {
-    opacity: 1;
     transform: scaleY(1);
+    opacity: 1;
   }
 }
 
 .closeButton {
+  z-index: 30;
   position: absolute;
   top: 17px;
   right: 17px;
-  z-index: 30;
-  color: $color-secondary;
-  background: none;
   border: none;
+  background: none;
+  color: $color-secondary;
   cursor: pointer;
 
   &:hover {
@@ -65,7 +65,7 @@
 }
 
 .error {
+  color: $color-danger;
   font-size: 1.2rem;
   text-align: center;
-  color: $color-danger;
 }

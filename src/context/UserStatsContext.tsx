@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { getCurrentUser } from "../config/authApi";
+import { getCurrentUser } from "../config/auth-api";
 import { type UserStats, UserStatsContext } from "./UserStatsContextDefinition";
 
 export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -79,13 +79,15 @@ export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
     setStats(newStats);
   };
 
+  const refreshStats = () => fetchUserData(true);
+
   return (
     <UserStatsContext.Provider
       value={{
         ...stats,
         isLoading,
         updateBalance,
-        refreshStats: () => fetchUserData(true),
+        refreshStats,
       }}
     >
       {children}

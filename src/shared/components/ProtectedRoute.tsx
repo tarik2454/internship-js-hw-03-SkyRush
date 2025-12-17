@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { hasToken } from "../config/authApi";
+import { hasToken } from "../../config/auth-api";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

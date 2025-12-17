@@ -10,8 +10,8 @@ import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { RootLayout } from "./layouts/RootLayout";
 import { HomePage } from "./pages/HomePage";
-import { ProtectedRoute } from "./shared/ProtectedRoute";
-import { initAuthToken } from "./config/authApi";
+import { ProtectedRoute } from "./shared/components/ProtectedRoute";
+import { initAuthToken } from "./config/auth-api";
 import { UserStatsProvider } from "./context/UserStatsContext";
 
 initAuthToken();

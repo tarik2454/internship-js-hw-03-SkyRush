@@ -2,7 +2,7 @@ import type {
   LoginFormData,
   RegisterFormData,
   UpdateUserFormData,
-} from "../lib/validation";
+} from "../utils/zod-validation";
 import axios from "axios";
 
 export const API = axios.create({

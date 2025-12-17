@@ -65,6 +65,8 @@ export const GameRocket = () => {
 
   const isGameActive = gameState === "FLYING";
 
+  // TODO: enum
+
   return (
     <section>
       <div className={styles.gameArea}>
@@ -118,18 +120,15 @@ export const GameRocket = () => {
       </div>
 
       <div className={styles.quickBets}>
-        <button onClick={() => setBetAmount(10)} disabled={isGameActive}>
-          $10
-        </button>
-        <button onClick={() => setBetAmount(50)} disabled={isGameActive}>
-          $50
-        </button>
-        <button onClick={() => setBetAmount(100)} disabled={isGameActive}>
-          $100
-        </button>
-        <button onClick={() => setBetAmount(500)} disabled={isGameActive}>
-          $500
-        </button>
+        {[10, 50, 100, 500].map((amount) => (
+          <button
+            key={amount}
+            onClick={() => setBetAmount(amount)}
+            disabled={isGameActive}
+          >
+            ${amount}
+          </button>
+        ))}
       </div>
     </section>
   );

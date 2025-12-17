@@ -2,12 +2,15 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import styles from "./Profile.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "../shared/icons/user";
+import { User } from "../../shared/icons/user";
 import { toast } from "react-toastify";
-import { updateUser } from "../config/authApi";
+import { updateUser } from "../../config/auth-api";
 import { AxiosError } from "axios";
-import { updateUserSchema, type UpdateUserFormData } from "../lib/validation";
-import { useUserStats } from "../hooks/useUserStats";
+import {
+  updateUserSchema,
+  type UpdateUserFormData,
+} from "../../utils/zod-validation";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const Profile = () => {
   const {

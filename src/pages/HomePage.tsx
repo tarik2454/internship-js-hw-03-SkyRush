@@ -1,27 +1,13 @@
-import { GameRocket } from "../modules/rocket/GameRocket";
-import { ClaimBonus } from "../modules/ClaimBonus";
+import { ClaimBonus } from "../modules/claimBonus/ClaimBonus";
 import styles from "./HomePage.module.scss";
-import Container from "../shared/Container";
-import PageWrapper from "../shared/PageWrapper";
-import { Leaderboard } from "../modules/Leaderboard";
+import Container from "../shared/components/Container";
+import PageWrapper from "../shared/components/PageWrapper";
+import { Leaderboard } from "../modules/leaderBoard/Leaderboard";
 import { useState } from "react";
-import { GameCases } from "../modules/cases/GameCases";
+import { homeTabs } from "../constants/home-tabs";
 
 export const HomePage = () => {
-  const [activeTab, setActiveTab] = useState<"rocket" | "cases">("rocket");
-
-  const tabs = [
-    {
-      id: "rocket" as const,
-      label: "🚀 Rocket",
-      content: <GameRocket />,
-    },
-    {
-      id: "cases" as const,
-      label: "📦 Cases",
-      content: <GameCases />,
-    },
-  ];
+  const [activeTab, setActiveTab] = useState(homeTabs[0].id);
 
   return (
     <PageWrapper>
@@ -29,7 +15,7 @@ export const HomePage = () => {
         <div className={styles.homePage}>
           <div>
             <section className={styles.tabsWrapper}>
-              {tabs.map((tab) => (
+              {homeTabs.map((tab) => (
                 <button
                   key={tab.id}
                   type="button"
@@ -42,7 +28,7 @@ export const HomePage = () => {
             </section>
 
             <div className={styles.gameContent}>
-              {tabs.find((tab) => tab.id === activeTab)?.content}
+              {homeTabs.find((tab) => tab.id === activeTab)?.content}
             </div>
           </div>
 

@@ -1,9 +1,9 @@
-import { Bonus } from "../shared/icons/bonus";
+import { Bonus } from "../../shared/icons/bonus";
 import styles from "./ClaimBonus.module.scss";
-import { Timer } from "../shared/icons/timer";
+import { Timer } from "../../shared/icons/timer";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { useUserStats } from "../hooks/useUserStats";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const ClaimBonus = () => {
   const { updateBalance } = useUserStats();
