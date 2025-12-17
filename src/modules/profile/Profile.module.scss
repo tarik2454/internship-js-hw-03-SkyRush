@@ -1,5 +1,4 @@
-@use "../../styles/variables" as *;
-@use "../../styles/mixins" as *;
+@use "../../styles" as *;
 
 .profileTitle {
   margin-bottom: 9px;
@@ -31,19 +30,19 @@
     width: 100%;
     padding: 9.5px 12px;
     border: 1px solid rgb(49 65 88 / 100%);
-    border-radius: $radius-8;
+    border-radius: var(--radius-8);
     border-radius: 8px;
     background: rgb(29 41 61 / 100%);
     box-shadow: 0 0 0 0.49px rgb(161 161 161 / 8%);
     color: #cad5e2;
-    transition: $transition-base;
+    transition: var(--transition-base);
 
     &::placeholder {
       color: #717182;
     }
 
     &:focus {
-      border-color: $color-primary;
+      border-color: var(--color-primary);
       outline: none;
       background: rgb(0 0 0 / 30%);
     }
@@ -67,7 +66,7 @@
 
 .titleStats {
   margin-bottom: 8px;
-  color: $color-secondary;
+  color: var(--color-secondary);
   font-size: 16px;
 }
 
@@ -90,7 +89,7 @@
   span {
     display: block;
     margin-top: 4px;
-    color: $color-primary;
+    color: var(--color-primary);
   }
 }
 

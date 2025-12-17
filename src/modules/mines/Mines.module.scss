@@ -1,2 +1,192 @@
-@use "../../styles/variables" as *;
-@use "../../styles/mixins" as *;
+@use "../../styles" as *;
+
+.mainSection {
+  display: grid;
+  grid-template-columns: 1fr 299px;
+  gap: 24px;
+}
+
+.gameTitle {
+  margin-bottom: 16px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.gameBoard {
+  min-height: 352px;
+  border: 2px solid #ad46ff4d;
+  border-radius: var(--radius-14);
+  background:
+    url("/mines/place-bet.svg") center no-repeat,
+    linear-gradient(135deg, #0f172b 0%, #1d293d 100%);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardTitle {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.card {
+  padding: 16px;
+  border: 1px solid #314158;
+  border-radius: var(--radius-14);
+  background: #0f172b80;
+}
+
+.controlGroup {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.input {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border: 1px solid #314158;
+  background: #1d293d;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.quickBets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.betOption {
+  padding: 8px 0;
+  border: 1px solid #314158;
+  border-radius: var(--radius-4);
+  background: #1d293d;
+  color: var(--color-secondary);
+  font-size: 13px;
+  transition: var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.minesOptions {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.mineOption {
+  padding: 8px 0;
+  border: 1px solid #314158;
+  border-radius: var(--radius-4);
+  background: #1d293d;
+  color: var(--color-secondary);
+  font-size: 13px;
+  transition: var(--transition-base);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  &.active {
+    border-color: #2b7fff;
+    background: linear-gradient(90deg, #155dfc 0%, #9810fa 100%);
+    color: white;
+  }
+}
+
+.startGameBtn {
+  @include flex-center;
+  width: 100%;
+  padding: 8px 0;
+  gap: 16px;
+  border: none;
+  border-radius: var(--radius-8);
+  background: linear-gradient(90deg, #00a63e 0%, #009966 100%);
+  color: var(--color-primary);
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btnIcon {
+  font-weight: 400;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+/* Stats Card */
+.statsRow {
+  @include flex-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.statsLabel {
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
+.statsValue {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.statsValueSuccess {
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.statsValueAccent {
+  color: #51a2ff;
+  font-weight: 700;
+}
+
+/* Tips Card */
+.tipsCard {
+  background: rgb(29 41 61 / 30%);
+}
+
+.bulbIcon {
+  margin-right: 4px;
+}
+
+.tipsList {
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  gap: 8px;
+
+  li {
+    position: relative;
+    color: var(--color-secondary);
+    font-size: 13px;
+    list-style-type: disc;
+
+    &::marker {
+      color: var(--color-secondary);
+      font-size: 10px;
+    }
+  }
+}

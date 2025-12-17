@@ -4,6 +4,7 @@ import { Place1 } from "../../shared/icons/place1";
 import { Place2 } from "../../shared/icons/place2";
 import { Place3 } from "../../shared/icons/place3";
 import { useLeaderboard } from "./hooks/useLeaderboard";
+import { cx } from "../../utils/classNames";
 
 export const Leaderboard = () => {
   const { leaders, currentUsername } = useLeaderboard();
@@ -22,9 +23,10 @@ export const Leaderboard = () => {
         {leaders.map((player) => (
           <li
             key={player._id}
-            className={`${player.rank <= 3 ? styles.topRank : ""} ${
-              player.username === currentUsername ? styles.currentUser : ""
-            }`}
+            className={cx(
+              player.rank <= 3 && styles.topRank,
+              player.username === currentUsername && styles.currentUser,
+            )}
           >
             <div className={styles.rank}>
               {player.rank === 1 ? (

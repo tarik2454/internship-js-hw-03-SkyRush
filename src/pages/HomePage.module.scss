@@ -1,5 +1,4 @@
-@use "../styles/variables" as *;
-@use "../styles/mixins" as *;
+@use "../styles" as *;
 
 .homePage {
   display: grid;
@@ -18,7 +17,7 @@
   padding: 4px;
   gap: 8px;
   border: 1px solid rgb(20 71 230 / 30%);
-  border-radius: $radius-14;
+  border-radius: var(--radius-14);
   background: rgb(29 41 61 / 50%);
 }
 
@@ -31,7 +30,7 @@
 .gameButton {
   padding: 4.5px 15px;
   border: 1px solid rgb(0 0 0 / 0%);
-  border-radius: $radius-14;
+  border-radius: var(--radius-14);
 
   background: transparent;
   color: #cad5e2;
