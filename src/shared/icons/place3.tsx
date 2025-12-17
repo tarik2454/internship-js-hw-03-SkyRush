@@ -13,7 +13,7 @@ export function Place3() {
         </clipPath>
       </defs>
       <path d="M0 0h20v20H0z" />
-      <g clip-path="url(#a)">
+      <g clipPath="url(#a)">
         <path d="M0 0h20v20H0z" />
         <path
           stroke="#e17100"

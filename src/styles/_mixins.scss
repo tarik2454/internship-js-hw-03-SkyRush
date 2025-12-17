@@ -11,7 +11,57 @@
 }
 
 @mixin mobile {
-  @media (max-width: 768px) {
+  @media (width < 768px) {
     @content;
+  }
+}
+
+@mixin rarity-styles {
+  &.common {
+    background: linear-gradient(
+      135deg,
+      rgba(69.1, 85.19, 108.17, 1),
+      rgba(49.34, 65.09, 87.59, 1) 100%
+    );
+  }
+
+  &.uncommon {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 166.08, 61.71, 1),
+      rgba(0, 130.05, 53.5, 1) 100%
+    );
+  }
+
+  &.rare {
+    background: linear-gradient(
+      135deg,
+      rgba(21.32, 92.93, 251.52, 1),
+      rgba(19.87, 71.18, 229.95, 1) 100%
+    );
+  }
+
+  &.epic {
+    background: linear-gradient(
+      135deg,
+      rgba(152.19, 15.74, 250.25, 1),
+      rgba(130.03, 0, 218.6, 1) 100%
+    );
+  }
+
+  &.legendary {
+    background: linear-gradient(
+      135deg,
+      rgba(229.84, 0, 118.17, 1),
+      rgba(231.15, 0, 10.76, 1) 100%
+    );
+  }
+
+  &.gold {
+    background: linear-gradient(
+      135deg,
+      rgba(240.03, 176.69, 0, 1),
+      rgba(225.36, 113.05, 0, 1) 100%
+    );
   }
 }

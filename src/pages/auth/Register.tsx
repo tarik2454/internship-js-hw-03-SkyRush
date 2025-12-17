@@ -3,10 +3,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import styles from "./Auth.module.scss";
-import { registerSchema, type RegisterFormData } from "../../lib/validation";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "../../utils/zod-validation";
 import { Auth } from "../../shared/icons/auth";
-import { registerUser } from "../../config/authApi";
+import { registerUser } from "../../config/auth-api";
 import { toast } from "react-toastify";
+
+import { Input } from "../../shared/components/Input";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -42,53 +47,32 @@ export const Register = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <div className={styles.inputGroup}>
-        <label htmlFor="username">Username</label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="username"
-            type="text"
-            placeholder="Username"
-            {...register("username")}
-            className={errors.username ? "errorInput" : ""}
-          />
-        </div>
-        {errors.username && (
-          <span className="errorMessage">{errors.username.message}</span>
-        )}
-      </div>
+      <Input
+        id="username"
+        label="Username"
+        type="text"
+        placeholder="Username"
+        error={errors.username}
+        {...register("username")}
+      />
 
-      <div className={styles.inputGroup}>
-        <label htmlFor="email">Email</label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="email"
-            type="text"
-            placeholder="Email"
-            {...register("email")}
-            className={errors.email ? "errorInput" : ""}
-          />
-        </div>
-        {errors.email && (
-          <span className="errorMessage">{errors.email.message}</span>
-        )}
-      </div>
+      <Input
+        id="email"
+        label="Email"
+        type="text"
+        placeholder="Email"
+        error={errors.email}
+        {...register("email")}
+      />
 
-      <div className={styles.inputGroup}>
-        <label htmlFor="password">Password</label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="password"
-            type="password"
-            placeholder="Password"
-            {...register("password")}
-            className={errors.password ? "errorInput" : ""}
-          />
-        </div>
-        {errors.password && (
-          <span className="errorMessage">{errors.password.message}</span>
-        )}
-      </div>
+      <Input
+        id="password"
+        label="Password"
+        type="password"
+        placeholder="Password"
+        error={errors.password}
+        {...register("password")}
+      />
 
       <button
         type="submit"

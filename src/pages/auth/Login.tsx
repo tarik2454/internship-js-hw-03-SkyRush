@@ -3,10 +3,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import styles from "./Auth.module.scss";
-import { loginSchema, type LoginFormData } from "../../lib/validation";
+import { loginSchema, type LoginFormData } from "../../utils/zod-validation";
 import { Auth } from "../../shared/icons/auth";
-import { loginUser } from "../../config/authApi";
+import { loginUser } from "../../config/auth-api";
 import { toast } from "react-toastify";
+
+import { Input } from "../../shared/components/Input";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -41,37 +43,23 @@ export const Login = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-      <div className={styles.inputGroup}>
-        <label htmlFor="email">Email</label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="email"
-            type="text"
-            placeholder="Email"
-            {...register("email")}
-            className={errors.email ? "errorInput" : ""}
-          />
-        </div>
-        {errors.email && (
-          <span className="errorMessage">{errors.email.message}</span>
-        )}
-      </div>
+      <Input
+        id="email"
+        label="Email"
+        type="text"
+        placeholder="Email"
+        error={errors.email}
+        {...register("email")}
+      />
 
-      <div className={styles.inputGroup}>
-        <label htmlFor="password">Password</label>
-        <div className={styles.inputWrapper}>
-          <input
-            id="password"
-            type="password"
-            placeholder="Password"
-            {...register("password")}
-            className={errors.password ? "errorInput" : ""}
-          />
-        </div>
-        {errors.password && (
-          <span className="errorMessage">{errors.password.message}</span>
-        )}
-      </div>
+      <Input
+        id="password"
+        label="Password"
+        type="password"
+        placeholder="Password"
+        error={errors.password}
+        {...register("password")}
+      />
 
       <button
         type="submit"

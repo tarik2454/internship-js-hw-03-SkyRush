@@ -1,5 +1,5 @@
-@use "../styles/variables" as *;
-@use "../styles/mixins" as *;
+@use "../../styles/variables" as *;
+@use "../../styles/mixins" as *;
 
 .container {
   width: 100%;
@@ -7,7 +7,7 @@
   margin: 0 auto;
   padding: 0 32px;
 
-  @media (min-width: 1280px) {
+  @media (width >= 1280px) {
     padding: 0 112px;
   }
 }

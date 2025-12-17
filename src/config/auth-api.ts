@@ -2,12 +2,24 @@ import type {
   LoginFormData,
   RegisterFormData,
   UpdateUserFormData,
-} from "../lib/validation";
+} from "../utils/zod-validation";
 import axios from "axios";
 
 export const API = axios.create({
   baseURL: "https://backend-internship-js-hw-03-sky-rus.vercel.app/api",
 });
+
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("token");
+      API.defaults.headers.common.Authorization = "";
+      window.location.href = "/auth/login";
+    }
+    return Promise.reject(error);
+  },
+);
 
 export const hasToken = () => localStorage.getItem("token") !== null;
 
@@ -16,7 +28,6 @@ export const initAuthToken = () => {
   if (token) API.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
-// Types
 export interface AuthResponse {
   token: string;
 }
@@ -30,7 +41,6 @@ export interface User {
   totalWon: number;
 }
 
-// API functions
 export const registerUser = async (data: RegisterFormData) =>
   (await API.post("/users/register", data)).data;
 
@@ -42,7 +52,7 @@ export const loginUser = async (data: LoginFormData) => {
 };
 
 export const getCurrentUser = async () =>
-  (await API.get("/users/current")).data;
+  (await API.get(`/users/current?t=${Date.now()}`)).data;
 
 export const logoutUser = async () => {
   const response = await API.post("/users/logout");
@@ -55,4 +65,4 @@ export const updateUser = async (data: UpdateUserFormData) =>
   (await API.patch("/users/update", data)).data;
 
 export const getAllUsers = async (): Promise<User[]> =>
-  (await API.get("/users/users")).data;
+  (await API.get(`/users/users?t=${Date.now()}`)).data;

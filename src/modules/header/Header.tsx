@@ -1,38 +1,38 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
-import { useGame } from "../providers/GameProvider";
-import { logoutUser } from "../config/authApi";
+import { logoutUser } from "../../config/auth-api";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { Logo } from "../shared/icons/logo";
-import Container from "../shared/Container";
-import { Wallet } from "../shared/icons/wallet";
-import { Settings } from "../shared/icons/settings";
-import { Auth } from "../shared/icons/auth";
-import Modal from "../shared/Modal";
-import { Profile } from "./Profile";
+import { Logo } from "../../shared/icons/logo";
+import Container from "../../shared/components/Container";
+import { Wallet } from "../../shared/icons/wallet";
+import { Settings } from "../../shared/icons/settings";
+import { Auth } from "../../shared/icons/auth";
+import Modal from "../../shared/components/Modal";
+import { Profile } from "../profile/Profile";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const Header = () => {
   const navigate = useNavigate();
-  const { balance } = useGame();
-  const [loading, setLoading] = useState(false);
+  const { balance } = useUserStats();
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const toggleModal = () => setIsModalOpen((prevValue) => !prevValue);
 
   const handleLogout = async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
       await logoutUser();
       toast.success("Successfully logged out!");
       localStorage.removeItem("sky_rush_game_data");
+      localStorage.removeItem("leaderboard_users");
       navigate("/auth/login");
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("Failed to log out. Please try again.");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -41,10 +41,10 @@ export const Header = () => {
       <header className={styles.header}>
         <Container>
           <div className={styles.headerInner}>
-            <div className={styles.logo} onClick={() => navigate("/")}>
+            <Link className={styles.logo} to="/">
               <Logo />
               Rocket Casino
-            </div>
+            </Link>
 
             <div className={styles.headerActions}>
               <div className={styles.balance}>
@@ -53,25 +53,25 @@ export const Header = () => {
                 <span className={styles.amount}>${balance.toFixed(2)}</span>
               </div>
 
-              <button className={styles.profileBtn} onClick={openModal}>
+              <button className={styles.profileBtn} onClick={toggleModal}>
                 <Settings />
               </button>
 
               <button
                 className={styles.logoutButton}
                 onClick={handleLogout}
-                disabled={loading}
+                disabled={isLoading}
               >
                 <Auth />
-                {loading ? "Logging out..." : "Logout"}
+                {isLoading ? "Logging out..." : "Logout"}
               </button>
             </div>
           </div>
         </Container>
       </header>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <Profile />
+      <Modal isOpen={isModalOpen} onClose={toggleModal}>
+        {isModalOpen && <Profile />}
       </Modal>
     </>
   );

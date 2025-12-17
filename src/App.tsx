@@ -10,12 +10,13 @@ import { Login } from "./pages/auth/Login";
 import { Register } from "./pages/auth/Register";
 import { RootLayout } from "./layouts/RootLayout";
 import { HomePage } from "./pages/HomePage";
-import { initAuthToken } from "./config/authApi";
+import { ProtectedRoute } from "./shared/components/ProtectedRoute";
+import { initAuthToken } from "./config/auth-api";
+import { UserStatsProvider } from "./context/UserStatsContext";
 
-// Initialize auth token from localStorage on app startup
 initAuthToken();
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
@@ -25,12 +26,19 @@ function App() {
           <Route index element={<Navigate to="/auth/login" replace />} />
         </Route>
 
-        <Route path="/" element={<RootLayout />}>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <UserStatsProvider>
+                <RootLayout />
+              </UserStatsProvider>
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<HomePage />} />
         </Route>
       </Routes>
     </Router>
   );
 }
-
-export default App;

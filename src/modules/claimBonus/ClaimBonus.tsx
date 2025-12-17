@@ -1,11 +1,37 @@
-import { Bonus } from "../shared/icons/bonus";
+import { Bonus } from "../../shared/icons/bonus";
 import styles from "./ClaimBonus.module.scss";
-import { Timer } from "../shared/icons/timer";
-import { useGame } from "../providers/GameProvider";
+import { Timer } from "../../shared/icons/timer";
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const ClaimBonus = () => {
-  const { claimBonus, lastBonusClaimTime } = useGame();
+  const { updateBalance } = useUserStats();
+  const [lastBonusClaimTime, setLastBonusClaimTime] = useState<number | null>(
+    null,
+  );
+
+  const claimBonus = async () => {
+    const now = Date.now();
+    const COOLDOWN = 60 * 1000;
+    if (lastBonusClaimTime && now - lastBonusClaimTime < COOLDOWN) {
+      const remaining = Math.ceil(
+        (COOLDOWN - (now - lastBonusClaimTime)) / 1000,
+      );
+      return toast.warning(
+        `Please wait ${remaining} seconds before claiming again!`,
+      );
+    }
+
+    try {
+      await updateBalance(10);
+      setLastBonusClaimTime(now);
+      toast.success("Bonus claimed!");
+    } catch (error) {
+      console.error("Failed to claim bonus:", error);
+      toast.error("Failed to claim bonus");
+    }
+  };
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
 
   useEffect(() => {
@@ -16,7 +42,7 @@ export const ClaimBonus = () => {
       }
 
       const now = Date.now();
-      const COOLDOWN_MS = 60 * 1000; // 1 minute
+      const COOLDOWN_MS = 60 * 1000;
       const elapsed = now - lastBonusClaimTime;
       const remaining = Math.max(0, COOLDOWN_MS - elapsed);
 

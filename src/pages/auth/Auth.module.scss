@@ -7,55 +7,22 @@
   gap: 16px;
 }
 
-.inputGroup {
-  text-align: left;
-
-  label {
-    display: block;
-    margin-bottom: 4px;
-    color: #cad5e2;
-    font-weight: 500;
-  }
-
-  input {
-    width: 100%;
-    padding: 9.5px 12px;
-    border: 1px solid rgba(49, 65, 88, 1);
-    border-radius: $radius-8;
-    background: rgba(15, 23, 43, 1);
-    color: #cad5e2;
-
-    transition: $transition-base;
-
-    &::placeholder {
-      color: #717182;
-    }
-
-    &:focus {
-      border-color: $color-primary;
-      outline: none;
-      background: rgba(0, 0, 0, 0.3);
-    }
-  }
-}
-
 .submitBtn {
   @include flex-center;
   width: 100%;
   padding: 10px 0;
+
   gap: 7px;
   border: none;
-
   background: linear-gradient(
     90deg,
-    rgba(0, 152.7294158935547, 101.7408218383789, 1),
-    rgba(21.32286262512207, 92.9263687133789, 251.51747131347656, 1) 100%
+    rgb(0 152.7294158935547 101.7408218383789 / 100%),
+    rgb(21.32286262512207 92.9263687133789 251.51747131347656 / 100%) 100%
   );
   background-position: left;
   background-size: 200% 100%;
   color: #fff;
   font-size: 16px;
-
   transition: $transition-base;
 
   &:hover {

@@ -1,18 +1,27 @@
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./Profile.module.scss";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "../shared/icons/user";
+import { User } from "../../shared/icons/user";
 import { toast } from "react-toastify";
-import { getCurrentUser, updateUser } from "../config/authApi";
+import { updateUser } from "../../config/auth-api";
 import { AxiosError } from "axios";
-import { useGame } from "../providers/GameProvider";
-import { updateUserSchema, type UpdateUserFormData } from "../lib/validation";
+import {
+  updateUserSchema,
+  type UpdateUserFormData,
+} from "../../utils/zod-validation";
+import { useUserStats } from "../../hooks/useUserStats";
 
 export const Profile = () => {
-  const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const { balance, totalWagered, gamesPlayed, totalWon, resetAccount } =
-    useGame();
+  const {
+    balance,
+    totalWagered,
+    gamesPlayed,
+    totalWon,
+    username,
+    isLoading: isLoadingUser,
+    refreshStats,
+  } = useUserStats();
 
   const {
     register,
@@ -23,30 +32,33 @@ export const Profile = () => {
   } = useForm<UpdateUserFormData>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      username: "",
+      username: username || "",
     },
   });
 
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const userData = await getCurrentUser();
-        setValue("username", userData.username);
-      } catch (err: unknown) {
-        if (err instanceof AxiosError) {
-          toast.error(
-            err.response?.data?.message || "Failed to load user data"
-          );
-        } else {
-          toast.error("Failed to load user data");
-        }
-      } finally {
-        setIsLoadingUser(false);
-      }
-    };
+    if (username) {
+      setValue("username", username);
+    }
+  }, [username, setValue]);
 
-    loadUserData();
-  }, [setValue]);
+  const resetAccount = async () => {
+    try {
+      await updateUser({
+        username,
+        balance: 0,
+        totalWagered: 0,
+        gamesPlayed: 0,
+        totalWon: 0,
+      });
+      await refreshStats();
+      localStorage.removeItem("sky_rush_game_data");
+      toast.success("Account reset successfully!");
+    } catch (error) {
+      console.error("Failed to reset account:", error);
+      toast.error("Failed to reset account");
+    }
+  };
 
   const onSubmit = async (data: UpdateUserFormData) => {
     try {
@@ -57,6 +69,7 @@ export const Profile = () => {
         gamesPlayed,
         totalWon,
       });
+      await refreshStats();
       toast.success("Profile updated successfully!");
     } catch (err: unknown) {
       console.error(err);
