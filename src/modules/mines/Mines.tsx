@@ -1,10 +1,13 @@
+import { useEffect, useRef } from "react";
 import { cx } from "../../utils/classNames";
 import { Input } from "../../shared/components/Input";
 import { GameGrid } from "./components/GameGrid";
 import { useMinesGame } from "./hooks/useMinesGame";
+import { useUserStats } from "../../hooks/useUserStats";
 import styles from "./Mines.module.scss";
 
 export const Mines = () => {
+  const { updateBalance } = useUserStats();
   const {
     gameState,
     cells,
@@ -22,21 +25,50 @@ export const Mines = () => {
     nextMultiplier,
   } = useMinesGame();
 
+  const prevGameStateRef = useRef(gameState);
+  const betDeductedRef = useRef(false);
+
+  useEffect(() => {
+    const prevState = prevGameStateRef.current;
+
+    if (prevState !== "PLAYING" && gameState === "PLAYING") {
+      updateBalance(-betAmount, {
+        totalWagered: betAmount,
+        gamesPlayed: 1,
+      });
+      betDeductedRef.current = true;
+    }
+
+    if (prevState === "PLAYING" && gameState === "WON") {
+      const profit = currentValue - betAmount;
+      updateBalance(currentValue, {
+        totalWon: profit > 0 ? profit : 0,
+      });
+      betDeductedRef.current = false;
+    }
+
+    if (prevState === "PLAYING" && gameState === "LOST") {
+      betDeductedRef.current = false;
+    }
+
+    if (gameState === "IDLE" && prevState !== "IDLE") {
+      betDeductedRef.current = false;
+    }
+
+    prevGameStateRef.current = gameState;
+  }, [gameState, betAmount, currentValue, updateBalance]);
+
   const isPlaying = gameState === "PLAYING";
   const isGameEnded = gameState === "WON" || gameState === "LOST";
   const canInteract = !isPlaying;
 
   const handleMainButtonClick = () => {
     if (isPlaying) {
-      // Игра идет - забираем выигрыш
       cashOut();
     } else {
-      // Игра не идет (IDLE, WON, или LOST) - начинаем новую игру
-      // Если игра закончилась (WON/LOST), сначала сбрасываем состояние
       if (isGameEnded) {
         resetGame();
       }
-      // startGame сам сбросит состояние если нужно, но resetGame гарантирует чистый старт
       startGame();
     }
   };
@@ -96,9 +128,7 @@ export const Mines = () => {
 
       <div className={styles.sidebar}>
         <p className={styles.cardTitle}>Game Settings</p>
-        {/* ... settings card content ... */}
         <div className={styles.card}>
-          {/* ... inputs ... */}
           <div className={styles.controlGroup}>
             <Input
               label="Bet Amount"

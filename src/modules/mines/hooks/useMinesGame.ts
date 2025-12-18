@@ -86,7 +86,6 @@ export const useMinesGame = (): UseMinesGameReturn => {
         const newRevealedCount = revealedCount + 1;
 
         if (newRevealedCount === GRID_SIZE - minesCount) {
-          // Auto win
           setGameState("WON");
           minePositions.forEach((pos) => {
             newCells[pos] = "mine";
