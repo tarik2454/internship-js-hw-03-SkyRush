@@ -2,9 +2,9 @@
 
 .card {
   padding: 17px;
-  border: 1px solid #314158;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-10);
-  background: #0f172b80;
+  background: color-mix(in srgb, #0f172b 50%, transparent);
 }
 
 .cardTitle {
@@ -22,7 +22,7 @@
   flex-direction: column;
   padding-bottom: 8px;
   gap: 8px;
-  border-bottom: 1px solid #314158;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .statsRow {
@@ -34,7 +34,7 @@
 }
 
 .statsLabel {
-  color: #90a1b9;
+  color: var(--color-text-muted);
   font-weight: 400;
 }
 
@@ -49,12 +49,12 @@
 }
 
 .statsValueNextTile {
-  color: #c27aff;
+  color: var(--color-purple-light);
   font-weight: 700;
 }
 
 .statsValueAccent {
-  color: #51a2ff;
+  color: var(--color-blue-accent);
   font-weight: 700;
 }
 

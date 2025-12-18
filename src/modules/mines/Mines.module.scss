@@ -1,9 +1,13 @@
 @use "../../styles" as *;
+@use "../../styles/index" as *;
 
 .mainSection {
   display: grid;
-  grid-template-columns: 1fr 299px;
   gap: 24px;
+
+  @media screen and (min-width: 1150px) {
+    grid-template-columns: 1fr 299px;
+  }
 }
 
 .gameContainer {
@@ -30,7 +34,7 @@
 }
 
 .headerCounterItem {
-  color: #cad5e2;
+  color: var(--color-secondary);
   font-size: 16px;
 }
 
@@ -41,7 +45,7 @@
 }
 
 .headerCounterItemMultiplier {
-  color: #c27aff;
+  color: var(--color-purple-light);
   font-weight: 700;
   font-size: 16px;
 }
@@ -53,7 +57,7 @@
   min-height: 352px;
   padding: 24px;
   overflow: hidden;
-  border: 2px solid #ad46ff4d;
+  border: 2px solid color-mix(in srgb, #ad46ff 30%, transparent);
   border-radius: var(--radius-14);
   background:
     url("/mines/place-bet.svg") center no-repeat,
@@ -71,7 +75,9 @@
 }
 
 .tipsCard {
-  border: 1px solid #1447e64d;
+  padding: 17px;
+  border: 1px solid color-mix(in srgb, #2b7fff 30%, transparent);
+  border-radius: var(--radius-10);
   background: linear-gradient(
     135deg,
     rgba(28, 57, 142, 0.2) 0%,
@@ -81,7 +87,7 @@
 
 .cardTitleTips {
   margin-bottom: 8px;
-  color: #8ec5ff;
+  color: var(--color-blue-light);
 }
 
 .tipsList {

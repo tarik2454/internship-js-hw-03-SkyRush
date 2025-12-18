@@ -8,9 +8,9 @@
 
 .card {
   padding: 17px;
-  border: 1px solid #314158;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-10);
-  background: #0f172b80;
+  background: color-mix(in srgb, #0f172b 50%, transparent);
 }
 
 .controlGroup {
@@ -20,7 +20,7 @@
 .label {
   display: block;
   margin-bottom: 8px;
-  color: #e2e8f0;
+  color: var(--color-text-label);
   font-weight: 500;
   font-size: 16px;
 }
@@ -28,8 +28,8 @@
 .input {
   margin-bottom: 16px;
   padding: 8px 12px;
-  border: 1px solid #314158;
-  background: #1d293d;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-input);
   color: var(--color-primary);
   font-weight: 500;
 }
@@ -42,9 +42,9 @@
 
 .betOption {
   padding: 8px 0;
-  border: 1px solid #314158;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-4);
-  background: #1d293d;
+  background: var(--color-bg-input);
   color: var(--color-secondary);
   font-size: 13px;
   transition: var(--transition-base);
@@ -59,7 +59,7 @@
     opacity: 0.5;
 
     &:hover {
-      border-color: #314158;
+      border-color: var(--color-border);
       color: var(--color-secondary);
     }
   }
@@ -73,9 +73,9 @@
 
 .mineOption {
   padding: 8px 0;
-  border: 1px solid #314158;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-4);
-  background: #1d293d;
+  background: var(--color-bg-input);
   color: var(--color-secondary);
   font-size: 13px;
   transition: var(--transition-base);
@@ -90,13 +90,13 @@
     opacity: 0.5;
 
     &:hover {
-      border-color: #314158;
+      border-color: var(--color-border);
       color: var(--color-secondary);
     }
   }
 
   &.active {
-    border-color: #2b7fff;
+    border-color: var(--color-blue-active);
     background: linear-gradient(90deg, #155dfc 0%, #9810fa 100%);
     color: white;
   }

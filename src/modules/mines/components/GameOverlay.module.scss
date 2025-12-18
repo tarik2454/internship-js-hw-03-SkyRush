@@ -7,23 +7,23 @@
   justify-content: center;
   padding: 17px;
   gap: 12px;
-  border: 1px solid #c1000780;
+  border: 1px solid color-mix(in srgb, #e7000b 50%, transparent);
   border-radius: var(--radius-10);
-  background: #82181a4d;
+  background: color-mix(in srgb, #82181a 30%, transparent);
 
   &.won {
-    border-color: #00a63e80;
-    background: #1882414d;
+    border-color: color-mix(in srgb, #00a63e 50%, transparent);
+    background: color-mix(in srgb, #188241 30%, transparent);
   }
 }
 
 .gameOverlayTitle {
-  color: #ff5f5f;
+  color: var(--color-red-error);
   font-weight: 700;
   font-size: 16px;
 
   &.won {
-    color: #4ade80;
+    color: var(--color-green-success);
   }
 }
 

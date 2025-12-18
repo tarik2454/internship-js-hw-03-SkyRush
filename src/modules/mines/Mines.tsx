@@ -9,7 +9,7 @@ import { useUserStats } from "../../hooks/useUserStats";
 import styles from "./Mines.module.scss";
 
 export const Mines = () => {
-  const { updateBalance } = useUserStats();
+  const { updateBalance, balance } = useUserStats();
   const {
     gameState,
     cells,
@@ -34,11 +34,15 @@ export const Mines = () => {
     const prevState = prevGameStateRef.current;
 
     if (prevState !== "PLAYING" && gameState === "PLAYING") {
-      updateBalance(-betAmount, {
-        totalWagered: betAmount,
-        gamesPlayed: 1,
-      });
-      betDeductedRef.current = true;
+      if (balance >= betAmount) {
+        updateBalance(-betAmount, {
+          totalWagered: betAmount,
+          gamesPlayed: 1,
+        });
+        betDeductedRef.current = true;
+      } else {
+        resetGame();
+      }
     }
 
     if (prevState === "PLAYING" && gameState === "WON") {
@@ -58,7 +62,7 @@ export const Mines = () => {
     }
 
     prevGameStateRef.current = gameState;
-  }, [gameState, betAmount, currentValue, updateBalance]);
+  }, [gameState, betAmount, currentValue, updateBalance, balance, resetGame]);
 
   const isPlaying = gameState === "PLAYING";
   const isGameEnded = gameState === "WON" || gameState === "LOST";

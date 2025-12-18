@@ -6,7 +6,11 @@
   margin: 0 auto;
   padding: 0 32px;
 
-  @media (width >= 1280px) {
+  @include tablet {
+    padding: 0 48px;
+  }
+
+  @include desktop {
     padding: 0 112px;
   }
 }

@@ -69,6 +69,6 @@ button {
 
   &:focus {
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--color-danger), transparent 80%) !important;
+      color-mix(in srgb, #f44336, transparent 80%) !important;
   }
 }
