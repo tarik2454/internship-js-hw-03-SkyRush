@@ -10,10 +10,19 @@ export const Mines = () => {
 
   return (
     <section className={styles.mainSection}>
-      <div className={styles.gameWrapper}>
-        <h2 className={styles.gameTitle}>Mines</h2>
-        <div className={styles.gameBoard}>
-          <GameGrid />
+      <div className={styles.gameContainer}>
+        <div className={styles.gameWrapper}>
+          <h2 className={styles.gameTitle}>Mines</h2>
+          <div className={styles.gameBoard}>
+            <GameGrid />
+          </div>
+        </div>
+
+        <div className={styles.gameOverOverlay}>
+          <p className={styles.gameOverTitle}>
+            <span>💣</span> You hit a mine!
+          </p>
+          <button className={styles.newGameBtn}>New Game</button>
         </div>
       </div>
 

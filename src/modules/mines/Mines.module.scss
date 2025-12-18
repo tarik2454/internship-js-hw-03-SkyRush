@@ -6,6 +6,12 @@
   gap: 24px;
 }
 
+.gameContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .gameTitle {
   margin-bottom: 16px;
   font-weight: 700;
@@ -19,11 +25,44 @@
   justify-content: center;
   min-height: 352px;
   padding: 24px;
+  overflow: hidden;
   border: 2px solid #ad46ff4d;
   border-radius: var(--radius-14);
   background:
     url("/mines/place-bet.svg") center no-repeat,
     linear-gradient(135deg, #0f172b 0%, #1d293d 100%);
+}
+
+.gameOverOverlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 17px;
+  gap: 12px;
+  border: 1px solid #c1000780;
+  border-radius: var(--radius-10);
+  background: #82181a4d;
+}
+
+.gameOverTitle {
+  color: #ff5f5f;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.newGameBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-8);
+  background: linear-gradient(90deg, #155dfc 0%, #9810fa 100%);
+  color: white;
+  font-weight: 500;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .sidebar {
