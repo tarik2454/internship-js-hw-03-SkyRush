@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Input } from "../../shared/components/Input";
 import { cx } from "../../utils/classNames";
+import { GameGrid } from "./components/GameGrid";
 import styles from "./Mines.module.scss";
 
 export const Mines = () => {
@@ -11,7 +12,9 @@ export const Mines = () => {
     <section className={styles.mainSection}>
       <div className={styles.gameWrapper}>
         <h2 className={styles.gameTitle}>Mines</h2>
-        <div className={styles.gameBoard}></div>
+        <div className={styles.gameBoard}>
+          <GameGrid />
+        </div>
       </div>
 
       <div className={styles.sidebar}>
@@ -65,23 +68,27 @@ export const Mines = () => {
         </div>
 
         <div className={styles.card}>
-          <p className={styles.cardTitle}>Current Game</p>
-          <div className={styles.statsRow}>
-            <span className={styles.statsLabel}>Bet Amount:</span>
-            <span className={styles.statsValue}>$0.00</span>
+          <p className={cx(styles.cardTitle, styles.cardTitleCurrentGame)}>
+            Current Game
+          </p>
+          <div className={styles.statsWrapper}>
+            <div className={styles.statsRow}>
+              <span className={styles.statsLabel}>Bet Amount:</span>
+              <span className={styles.statsValue}>$0.00</span>
+            </div>
+            <div className={styles.statsRow}>
+              <span className={styles.statsLabel}>Current Value:</span>
+              <span className={styles.statsValueSuccess}>$0.00</span>
+            </div>
           </div>
-          <div className={styles.statsRow}>
-            <span className={styles.statsLabel}>Current Value:</span>
-            <span className={styles.statsValueSuccess}>$0.00</span>
-          </div>
-          <div className={styles.statsRow}>
+          <div className={cx(styles.statsRow, styles.statsRowSafeTilesLeft)}>
             <span className={styles.statsLabel}>Safe Tiles Left:</span>
             <span className={styles.statsValueAccent}>22</span>
           </div>
         </div>
 
         <div className={cx(styles.card, styles.tipsCard)}>
-          <p className={styles.cardTitle}>
+          <p className={cx(styles.cardTitle, styles.cardTitleTips)}>
             <span className={styles.bulbIcon}>💡</span> Tips
           </p>
           <ul className={styles.tipsList}>

@@ -14,7 +14,11 @@
 }
 
 .gameBoard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 352px;
+  padding: 24px;
   border: 2px solid #ad46ff4d;
   border-radius: var(--radius-14);
   background:
@@ -35,9 +39,9 @@
 }
 
 .card {
-  padding: 16px;
+  padding: 17px;
   border: 1px solid #314158;
-  border-radius: var(--radius-14);
+  border-radius: var(--radius-10);
   background: #0f172b80;
 }
 
@@ -135,17 +139,27 @@
 /* Stats Card */
 .statsRow {
   @include flex-between;
-  margin-bottom: 12px;
-  font-size: 14px;
 
   &:last-child {
     margin-bottom: 0;
   }
 }
 
+.cardTitleCurrentGame {
+  margin-bottom: 12px;
+}
+
+.statsWrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+  gap: 8px;
+  border-bottom: 1px solid #314158;
+}
+
 .statsLabel {
-  color: var(--color-secondary);
-  font-weight: 500;
+  color: #90a1b9;
+  font-weight: 400;
 }
 
 .statsValue {
@@ -163,30 +177,43 @@
   font-weight: 700;
 }
 
-/* Tips Card */
-.tipsCard {
-  background: rgb(29 41 61 / 30%);
+.statsRowSafeTilesLeft {
+  padding-top: 8px;
 }
 
-.bulbIcon {
-  margin-right: 4px;
+/* Tips Card */
+.tipsCard {
+  border: 1px solid #1447e64d;
+  background: linear-gradient(
+    135deg,
+    rgba(28, 57, 142, 0.2) 0%,
+    rgba(89, 22, 139, 0.2) 100%
+  );
+}
+
+.cardTitleTips {
+  margin-bottom: 8px;
+  color: #8ec5ff;
 }
 
 .tipsList {
   display: flex;
   flex-direction: column;
   padding-left: 20px;
-  gap: 8px;
+  gap: 4px;
 
   li {
     position: relative;
     color: var(--color-secondary);
-    font-size: 13px;
-    list-style-type: disc;
 
-    &::marker {
+    &::before {
+      position: absolute;
+      top: 4px;
+      left: -15px;
+      content: "●";
       color: var(--color-secondary);
-      font-size: 10px;
+      font-size: 6px;
+      line-height: 1;
     }
   }
 }
