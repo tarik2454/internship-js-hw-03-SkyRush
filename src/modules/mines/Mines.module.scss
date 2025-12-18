@@ -12,11 +12,38 @@
   gap: 16px;
 }
 
-.gameTitle {
+.gameHeader {
+  @include flex-between;
+  align-items: center;
   margin-bottom: 16px;
+}
+
+.gameTitle {
   font-weight: 700;
   font-size: 18px;
   line-height: 1.5;
+}
+
+.headerCounters {
+  display: flex;
+  gap: 16px;
+}
+
+.headerCounterItem {
+  color: #cad5e2;
+  font-size: 16px;
+}
+
+.headerCounterItemCount {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.headerCounterItemMultiplier {
+  color: #c27aff;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .gameBoard {
@@ -31,9 +58,13 @@
   background:
     url("/mines/place-bet.svg") center no-repeat,
     linear-gradient(135deg, #0f172b 0%, #1d293d 100%);
+
+  &.playing {
+    background: linear-gradient(135deg, #0f172b 0%, #1d293d 100%);
+  }
 }
 
-.gameOverOverlay {
+.gameOverlay {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,26 +74,27 @@
   border: 1px solid #c1000780;
   border-radius: var(--radius-10);
   background: #82181a4d;
+
+  &.won {
+    border-color: #00a63e80;
+    background: #1882414d;
+  }
 }
 
-.gameOverTitle {
+.gameOverlayTitle {
   color: #ff5f5f;
   font-weight: 700;
   font-size: 16px;
+
+  &.won {
+    color: #4ade80;
+  }
 }
 
-.newGameBtn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: var(--radius-8);
-  background: linear-gradient(90deg, #155dfc 0%, #9810fa 100%);
+.wonAmount {
   color: white;
-  font-weight: 500;
-  transition: opacity 0.2s;
-
-  &:hover {
-    opacity: 0.9;
-  }
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .sidebar {
@@ -124,11 +156,21 @@
     border-color: var(--color-primary);
     color: var(--color-primary);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      border-color: #314158;
+      color: var(--color-secondary);
+    }
+  }
 }
 
 .minesOptions {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 8px;
 }
 
@@ -144,6 +186,16 @@
   &:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+
+    &:hover {
+      border-color: #314158;
+      color: var(--color-secondary);
+    }
   }
 
   &.active {
@@ -167,6 +219,47 @@
   &:hover {
     opacity: 0.9;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &.playing {
+    position: relative;
+    background: transparent;
+    color: white;
+    animation: pulseOpacity 2s ease-in-out infinite;
+
+    &::before {
+      z-index: -1;
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-8);
+      background: linear-gradient(90deg, #d08700 0%, #f54900 100%);
+      content: "";
+      animation: pulseOpacity 2s ease-in-out infinite;
+    }
+
+    &:hover {
+      animation: none;
+
+      &::before {
+        animation: none;
+        opacity: 0.8;
+      }
+    }
+  }
+}
+
+@keyframes pulseOpacity {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .btnIcon {
@@ -175,7 +268,6 @@
   opacity: 0.8;
 }
 
-/* Stats Card */
 .statsRow {
   @include flex-between;
 
@@ -211,6 +303,11 @@
   font-weight: 700;
 }
 
+.statsValueNextTile {
+  color: #c27aff;
+  font-weight: 700;
+}
+
 .statsValueAccent {
   color: #51a2ff;
   font-weight: 700;
@@ -220,7 +317,6 @@
   padding-top: 8px;
 }
 
-/* Tips Card */
 .tipsCard {
   border: 1px solid #1447e64d;
   background: linear-gradient(
