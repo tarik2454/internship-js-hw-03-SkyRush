@@ -1,0 +1,64 @@
+@use "../../../styles" as *;
+
+.card {
+  padding: 17px;
+  border: 1px solid #314158;
+  border-radius: var(--radius-10);
+  background: #0f172b80;
+}
+
+.cardTitle {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.cardTitleCurrentGame {
+  margin-bottom: 12px;
+}
+
+.statsWrapper {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+  gap: 8px;
+  border-bottom: 1px solid #314158;
+}
+
+.statsRow {
+  @include flex-between;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.statsLabel {
+  color: #90a1b9;
+  font-weight: 400;
+}
+
+.statsValue {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.statsValueSuccess {
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.statsValueNextTile {
+  color: #c27aff;
+  font-weight: 700;
+}
+
+.statsValueAccent {
+  color: #51a2ff;
+  font-weight: 700;
+}
+
+.statsRowSafeTilesLeft {
+  padding-top: 8px;
+}
+

@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { cx } from "../../utils/classNames";
-import { Input } from "../../shared/components/Input";
 import { GameGrid } from "./components/GameGrid";
+import { GameSettingsCard } from "./components/GameSettingsCard";
+import { CurrentGameCard } from "./components/CurrentGameCard";
+import { GameOverlay } from "./components/GameOverlay";
 import { useMinesGame } from "./hooks/useMinesGame";
 import { useUserStats } from "../../hooks/useUserStats";
 import styles from "./Mines.module.scss";
@@ -109,122 +111,29 @@ export const Mines = () => {
           </div>
         </div>
 
-        {gameState === "LOST" && (
-          <div className={styles.gameOverlay}>
-            <p className={styles.gameOverlayTitle}>
-              <span>💣</span> You hit a mine!
-            </p>
-          </div>
-        )}
-        {gameState === "WON" && (
-          <div className={cx(styles.gameOverlay, styles.won)}>
-            <p className={cx(styles.gameOverlayTitle, styles.won)}>
-              <span>🎉</span> Cashed out successfully!
-            </p>
-            <p className={styles.wonAmount}>Won: ${currentValue.toFixed(2)}</p>
-          </div>
-        )}
+        <GameOverlay gameState={gameState} currentValue={currentValue} />
       </div>
 
       <div className={styles.sidebar}>
-        <p className={styles.cardTitle}>Game Settings</p>
-        <div className={styles.card}>
-          <div className={styles.controlGroup}>
-            <Input
-              label="Bet Amount"
-              classNameLabel={styles.label}
-              classNameInput={styles.input}
-              value={betAmount}
-              type="number"
-              min={0.1}
-              max={500}
-              step={0.1}
-              disabled={!canInteract}
-              onChange={(e) => setBetAmount(Number(e.target.value))}
-            />
-            <div className={styles.quickBets}>
-              {[10, 50, 100, 500].map((amount) => (
-                <button
-                  key={amount}
-                  className={styles.betOption}
-                  disabled={!canInteract}
-                  onClick={() => setBetAmount(amount)}
-                >
-                  ${amount}
-                </button>
-              ))}
-            </div>
-          </div>
+        <GameSettingsCard
+          betAmount={betAmount}
+          setBetAmount={setBetAmount}
+          minesCount={minesCount}
+          setMinesCount={setMinesCount}
+          canInteract={canInteract}
+          isPlaying={isPlaying}
+          currentValue={currentValue}
+          revealedCount={revealedCount}
+          onMainButtonClick={handleMainButtonClick}
+        />
 
-          <div className={styles.controlGroup}>
-            <p className={styles.label}>Mines: {minesCount}</p>
-            <div className={styles.minesOptions}>
-              {[1, 3, 5, 10, 15, 24].map((count) => (
-                <button
-                  key={count}
-                  className={cx(
-                    styles.mineOption,
-                    minesCount === count && styles.active,
-                  )}
-                  disabled={!canInteract}
-                  onClick={() => setMinesCount(count)}
-                >
-                  {count}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button
-            className={cx(styles.startGameBtn, {
-              [styles.playing]: isPlaying,
-            })}
-            onClick={handleMainButtonClick}
-            disabled={isPlaying && revealedCount === 0}
-          >
-            {isPlaying ? (
-              <>
-                <span className={styles.btnIcon}>💰</span> Cash Out $
-                {currentValue.toFixed(2)}
-              </>
-            ) : (
-              <>
-                <span className={styles.btnIcon}>$</span> Start Game
-              </>
-            )}
-          </button>
-        </div>
-
-        <div className={styles.card}>
-          <p className={cx(styles.cardTitle, styles.cardTitleCurrentGame)}>
-            Current Game
-          </p>
-          <div className={styles.statsWrapper}>
-            <div className={styles.statsRow}>
-              <span className={styles.statsLabel}>Bet Amount:</span>
-              <span className={styles.statsValue}>${betAmount.toFixed(2)}</span>
-            </div>
-            <div className={styles.statsRow}>
-              <span className={styles.statsLabel}>Current Value:</span>
-              <span className={styles.statsValueSuccess}>
-                ${currentValue.toFixed(2)}
-              </span>
-            </div>
-            <div className={styles.statsRow}>
-              <span className={styles.statsLabel}>Next Tile:</span>
-              <span className={styles.statsValueNextTile}>
-                {nextMultiplier.toFixed(2)}x
-              </span>
-            </div>
-          </div>
-
-          <div className={cx(styles.statsRow, styles.statsRowSafeTilesLeft)}>
-            <span className={styles.statsLabel}>Safe Tiles Left:</span>
-            <span className={styles.statsValueAccent}>
-              {25 - minesCount - revealedCount}
-            </span>
-          </div>
-        </div>
+        <CurrentGameCard
+          betAmount={betAmount}
+          currentValue={currentValue}
+          nextMultiplier={nextMultiplier}
+          minesCount={minesCount}
+          revealedCount={revealedCount}
+        />
 
         <div className={cx(styles.card, styles.tipsCard)}>
           <p className={cx(styles.cardTitle, styles.cardTitleTips)}>
