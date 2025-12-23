@@ -10,7 +10,8 @@
     padding: 0 48px;
   }
 
-  // @include desktop {
-  //   padding: 0 112px;
-  // }
+  @include desktop {
+    // padding: 0 112px;
+    padding: 0 96px;
+  }
 }
