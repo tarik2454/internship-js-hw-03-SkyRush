@@ -5,6 +5,7 @@ import PageWrapper from "../shared/components/PageWrapper";
 import { Leaderboard } from "../modules/leaderBoard/Leaderboard";
 import { useState } from "react";
 import { homeTabs } from "../constants/home-tabs";
+import { cx } from "../utils/classNames";
 
 export const HomePage = () => {
   const [activeTab, setActiveTab] = useState(homeTabs[0].id);
@@ -19,7 +20,7 @@ export const HomePage = () => {
                 <button
                   key={tab.id}
                   type="button"
-                  className={`${styles.gameButton} ${activeTab === tab.id ? styles.isActive : ""}`}
+                  className={cx(styles.gameButton, activeTab === tab.id && styles.isActive)}
                   onClick={() => setActiveTab(tab.id)}
                 >
                   {tab.label}

@@ -9,6 +9,7 @@ import {
   sportsContents,
 } from "./data/icon-contents";
 import { useUserStats } from "../../hooks/useUserStats";
+import { cx } from "../../utils/classNames";
 
 export const GameCases = () => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -229,7 +230,7 @@ export const GameCases = () => {
               const value = calculateItemValue(selectedCase, rarity);
               return (
                 <div
-                  className={`${styles.contentItemGameArea} ${styles[rarity]}`}
+                  className={cx(styles.contentItemGameArea, styles[rarity])}
                   key={`${item.id}-${repeatIndex}`}
                 >
                   <div className={styles.contentIconGameArea}>{item.emoji}</div>
@@ -268,10 +269,7 @@ export const GameCases = () => {
             const rarity = getItemClassName(index);
             const value = calculateItemValue(selectedCase, rarity);
             return (
-              <div
-                className={`${styles.contentItem} ${styles[rarity]}`}
-                key={item.id}
-              >
+              <div className={cx(styles.contentItem, styles[rarity])} key={item.id}>
                 <div className={styles.contentIcon}>{item.emoji}</div>
                 <div className={styles.itemValueSmall}>+{value}</div>
               </div>
@@ -284,36 +282,32 @@ export const GameCases = () => {
         <h3 className={styles.rarityTitle}>Rarity Guide</h3>
         <div className={styles.rarityList}>
           <div className={styles.rarityItem}>
-            <span className={`${styles.rarityСircle} ${styles.common}`}></span>
+            <span className={cx(styles.rarityСircle, styles.common)}></span>
             Common
             <span className={styles.rarityPercent}>(55%)</span>
           </div>
           <div className={styles.rarityItem}>
-            <span
-              className={`${styles.rarityСircle} ${styles.uncommon}`}
-            ></span>
+            <span className={cx(styles.rarityСircle, styles.uncommon)}></span>
             Uncommon
             <span className={styles.rarityPercent}>(25%)</span>
           </div>
           <div className={styles.rarityItem}>
-            <span className={`${styles.rarityСircle} ${styles.rare}`}></span>
+            <span className={cx(styles.rarityСircle, styles.rare)}></span>
             Rare
             <span className={styles.rarityPercent}>(12%)</span>
           </div>
           <div className={styles.rarityItem}>
-            <span className={`${styles.rarityСircle} ${styles.epic}`}></span>
+            <span className={cx(styles.rarityСircle, styles.epic)}></span>
             Epic
             <span className={styles.rarityPercent}>(5%)</span>
           </div>
           <div className={styles.rarityItem}>
-            <span
-              className={`${styles.rarityСircle} ${styles.legendary}`}
-            ></span>
+            <span className={cx(styles.rarityСircle, styles.legendary)}></span>
             Legendary
             <span className={styles.rarityPercent}>(2.5%)</span>
           </div>
           <div className={styles.rarityItem}>
-            <span className={`${styles.rarityСircle} ${styles.gold}`}></span>
+            <span className={cx(styles.rarityСircle, styles.gold)}></span>
             Gold
             <span className={styles.rarityPercent}>(0.5%)</span>
           </div>

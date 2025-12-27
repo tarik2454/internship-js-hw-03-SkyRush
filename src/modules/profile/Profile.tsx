@@ -11,6 +11,7 @@ import {
   type UpdateUserFormData,
 } from "../../utils/zod-validation";
 import { useUserStats } from "../../hooks/useUserStats";
+import { cx } from "../../utils/classNames";
 
 export const Profile = () => {
   const {
@@ -106,7 +107,7 @@ export const Profile = () => {
               placeholder={isLoadingUser ? "Loading..." : "Username"}
               disabled={isLoadingUser}
               {...register("username")}
-              className={errors.username ? "errorInput" : ""}
+              className={cx(errors.username && "errorInput")}
             />
           </div>
           {errors.username && (

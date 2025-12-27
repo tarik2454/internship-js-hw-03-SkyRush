@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import styles from "./GameRocket.module.scss";
 import { useUserStats } from "../../hooks/useUserStats";
+import { cx } from "../../utils/classNames";
 
 type GameState = "IDLE" | "BETTING" | "FLYING" | "CRASHED" | "CASHOUT";
 
@@ -72,9 +73,11 @@ export const GameRocket = () => {
       <div className={styles.gameArea}>
         <div className={styles.multiplierContainer}>
           <span
-            className={`${styles.multiplier} ${
-              gameState === "CRASHED" ? styles.crashed : ""
-            } ${gameState === "CASHOUT" ? styles.success : ""}`}
+            className={cx(
+              styles.multiplier,
+              gameState === "CRASHED" && styles.crashed,
+              gameState === "CASHOUT" && styles.success,
+            )}
           >
             {multiplier.toFixed(2)}x
           </span>
