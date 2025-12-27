@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import { getCurrentUser } from "../config/auth-api";
 import { type UserStats, UserStatsContext } from "./UserStatsContextDefinition";
 
-export const UserStatsProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const UserStatsProvider = ({ children }: { children: ReactNode }) => {
   const [stats, setStats] = useState<UserStats>(() => {
     const saved = localStorage.getItem("sky_rush_game_data");
     if (saved) {
